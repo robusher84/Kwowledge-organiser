@@ -137,19 +137,27 @@
   .celecard p{color:var(--muted);margin:0 0 20px}
   @keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 
-  /* horizontal progress trail */
-  .trailwrap{position:relative;height:76px;margin:16px 2px 4px}
-  .ttrack{position:absolute;left:8px;right:8px;top:36px;height:8px;border-radius:99px;background:var(--surface);border:1px solid var(--line)}
-  .tfill{position:absolute;left:8px;top:36px;height:8px;border-radius:99px;background:linear-gradient(90deg,#FFCF66,#F5AE2E);box-shadow:0 0 10px rgba(255,194,75,.5)}
-  .mile{position:absolute;top:40px;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:var(--surface);border:2px solid var(--line-hi);display:flex;align-items:center;justify-content:center;font-size:13px;opacity:.55}
-  .mile.lit{opacity:1;border-color:var(--gold);box-shadow:0 0 8px rgba(255,194,75,.55)}
-  .tstart,.tend{position:absolute;top:40px;transform:translate(-50%,-50%);font-size:18px}
-  .tstart{left:8px}
-  .tend{right:0;transform:translate(50%,-50%);filter:grayscale(1);opacity:.55}
-  .tend.lit{filter:none;opacity:1}
-  .thero{position:absolute;top:6px;transform:translate(-50%,0);font-size:30px;filter:drop-shadow(0 5px 6px rgba(0,0,0,.5));transition:left .6s cubic-bezier(.2,.8,.2,1);animation:bob2 1.9s ease-in-out infinite}
+  /* segmented progress bar */
+  .trailwrap{position:relative;margin:18px 2px 6px;padding:0 4px}
+  .segbar{display:flex;gap:3px;height:16px;margin-top:34px}
+  .seg{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:5px;transition:background .3s,box-shadow .3s}
+  .seg.on{background:linear-gradient(180deg,#FFCF66,#F5AE2E);border-color:#F5AE2E;box-shadow:0 0 8px rgba(255,194,75,.55)}
+  .thero{position:absolute;top:0;transform:translate(-50%,0);font-size:30px;filter:drop-shadow(0 5px 6px rgba(0,0,0,.5));transition:left .6s cubic-bezier(.2,.8,.2,1);animation:bob2 1.9s ease-in-out infinite;z-index:2}
   @keyframes bob2{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-4px)}}
-  .tlabel{position:absolute;left:0;right:0;bottom:-2px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+  .tlabel{text-align:center;margin-top:12px;color:var(--muted);font-size:13px;font-weight:700}
+  .tlabel .pctbig{color:var(--gold);font-size:22px;font-weight:800;letter-spacing:-.01em}
+
+  /* big child-friendly start buttons */
+  .startbtns{display:flex;flex-direction:column;gap:12px;margin:18px 0 6px}
+  .bigbtn{display:flex;align-items:center;gap:14px;width:100%;padding:16px 16px;border-radius:18px;text-align:left;
+    background:linear-gradient(180deg,#FFCF66,#F5AE2E);color:#2a1c00;box-shadow:0 8px 22px rgba(245,174,46,.30);transition:transform .08s}
+  .bigbtn.alt{background:var(--surface-hi);color:var(--text);border:1.5px solid var(--line-hi);box-shadow:none}
+  .bigbtn:active{transform:translateY(1px) scale(.995)}
+  .bigbtn .be{font-size:30px;flex:none;width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.14)}
+  .bigbtn.alt .be{background:var(--surface)}
+  .bigbtn .bx{display:flex;flex-direction:column;min-width:0}
+  .bigbtn .bt{font-size:19px;font-weight:800;line-height:1.15}
+  .bigbtn .bs{font-size:12.5px;font-weight:600;opacity:.85}
 
   /* region headers above tile groups */
   .rhead{display:flex;align-items:center;gap:8px;margin:18px 2px 10px;padding:9px 13px;background:var(--bg2);border:1.5px solid var(--line-hi);border-left-width:4px;border-radius:12px;font-weight:800;font-size:14px}
@@ -266,7 +274,7 @@
   <section id="welcome">
     <div class="hero">
       <div class="badge-lg">🧠</div>
-      <div class="kicker">Year 7 Quest</div>
+      <div class="kicker">High School Knowledge Quest</div>
       <h1>Level up your<br>knowledge</h1>
       <p>Quiz yourself on everything in your Knowledge Organiser — and find out the <em>why</em> behind every answer.</p>
     </div>
@@ -313,21 +321,28 @@
       <div class="stat"><b id="statStreak">0</b><span>Best streak</span></div>
     </div>
 
-    <div class="revrow">
-      <button class="btn secondary" id="reviseBtn">🎯 Choose subjects to revise</button>
-    </div>
-
     <div class="trailwrap" id="trail"></div>
 
+    <div class="startbtns" id="startbtns">
+      <button class="bigbtn" id="randomBtn">
+        <span class="be">🎲</span>
+        <span class="bx"><span class="bt">Random Quiz</span><span class="bs">A surprise mix — just press play</span></span>
+      </button>
+      <button class="bigbtn alt" id="customBtn">
+        <span class="be">🎯</span>
+        <span class="bx"><span class="bt">Build My Own Quiz</span><span class="bs">Choose the topics you want</span></span>
+      </button>
+    </div>
+
     <div class="maphd">
-      <h3 id="mapHeading">Your learning journey</h3>
+      <h3 id="mapHeading">Or pick one subject</h3>
       <span class="hint" id="mapHint">Tap a subject to play</span>
     </div>
 
     <div id="grid"></div>
 
     <div class="startbar hidden" id="startbar">
-      <button class="btn" id="startRevise" disabled>Start revision</button>
+      <button class="btn" id="startRevise" disabled>Start my quiz</button>
       <button class="btn ghost" id="cancelRevise">Cancel</button>
     </div>
 
@@ -426,7 +441,15 @@ const SUBJECTS = [
   {q:"How does the artist Pete Cromer create his animal artwork?", o:["Collage of cut, reassembled shapes","Realistic pencil shading and blending","Close-up photographs of live wildlife","Loose watercolour washes and splatters"], w:"Pete Cromer is a stylized artist who cuts out shapes and reassembles them (collage) to create animals."},
   {q:"To make a watercolour colour DARKER and more vivid, you should…", o:["Use less water, more paint","Use a lot more water","Add plenty of white paint","Use fresh, clean white paper"], w:"Less water and more paint makes watercolour more vivid and darker."},
   {q:"Which of these is one of the visual elements artists study?", o:["Texture","Tempo","Dynamics","Chord"], w:"The visual elements include line, tone, texture, shape, pattern and colour. Tempo, dynamics and chord are music terms."},
-  {q:"In art, 'tone' refers to…", o:["How light or dark something is","How rough a surface feels","The main colour being used","The overall size of the drawing"], w:"Tone is about lightness and darkness — building up tone (light, medium, dark) makes drawings look 3D and realistic."}
+  {q:"In art, 'tone' refers to…", o:["How light or dark something is","How rough a surface feels","The main colour being used","The overall size of the drawing"], w:"Tone is about lightness and darkness — building up tone (light, medium, dark) makes drawings look 3D and realistic."},
+  {q:"In art, 'line' is one of the visual elements. What is it?", o:["A mark drawn across a surface","The lightness or darkness of it","How rough a surface looks","The main colour that is chosen"], w:"Line is a visual element — a mark drawn across a surface; it can be thick, thin, straight or wavy."},
+  {q:"In art, what does 'texture' mean?", o:["How a surface looks or feels","How light or dark it is","The main colour chosen","A mark across the surface"], w:"Texture is how a surface looks or feels — rough, smooth, bumpy and so on."},
+  {q:"In art, a 'pattern' is…", o:["A design that repeats over again","How light or dark it is","How rough a surface feels","A single mark on paper"], w:"A pattern is a design or motif that repeats."},
+  {q:"In art, a 'shape' is best described as…", o:["A flat, enclosed 2D area","A solid, 3D form only","How light or dark it is","A design that repeats"], w:"A shape is a flat (2D) enclosed area with an outline."},
+  {q:"What kind of paint is watercolour?", o:["A water-soluble, transparent paint","A thick, solid oil paint","A dry, waxy drawing stick","A fast-drying spray paint"], w:"Watercolour is a water-soluble paint with transparent properties."},
+  {q:"What is 'mark making' in art?", o:["Making lines to suggest tone","Mixing two primary colours","Sticking down cut paper","Adding water to the paint"], w:"Mark making is creating different lines to suggest tone; more, closer lines look darker."},
+  {q:"Why would you add more water to a watercolour?", o:["To make the colour lighter","To make the colour darker","To make the paint thicker","To make it dry faster"], w:"Watercolour is transparent, so adding water lets the paper show through, making the colour lighter."},
+  {q:"How would you describe Abby Diamond's animal drawings?", o:["Realistic, with bright expressive marks","Cartoon-like and very simple","Made from cut paper shapes","Painted only in thick oils"], w:"Abby Diamond draws animals realistically but uses bright colour and expressive marks in watercolour and fine liner."}
  ]},
  {id:"computing", name:"Computing", emoji:"💻", c:"#4FC3F7", q:[
   {q:"The SMART rules in e-safety are there to help you…", o:["Stay safe online","Type much faster","Save phone battery","Draw pictures better"], w:"SMART = Stay safe, Don't meet up, Accepting files, Reliable?, Tell someone — a way to remember how to stay safe online."},
@@ -444,7 +467,17 @@ const SUBJECTS = [
   {q:"Hexadecimal (hex) is a number system that uses…", o:["Base 16, using digits and letters","Only the digits zero and one","Base 10, our everyday numbers","Base 2, the computer's own system"], w:"Hex is base 16 — 0–9 then A–F. Each hex digit stands for a 4-bit binary sequence, making long binary easier to read."},
   {q:"In Scratch, a loop repeats instructions. What is another name for a loop?", o:["Iteration","Selection","Duplication","Declaration"], w:"A loop repeats instructions and is also called iteration. Selection is the IF-statement idea."},
   {q:"In Scratch, what is a 'variable' used for?", o:["Storing data like scores","Repeating a set of instructions","Drawing the game background","Making the sprite grow bigger"], w:"A variable stores data (like a score) that can change while the program runs. An IF statement chooses what to do — that's selection."},
-  {q:"In Scratch, what is a 'sprite'?", o:["A character or object","The project's background image","A repeating loop of code","A saved account password"], w:"A sprite is a character or object in your game; changing its 'costume' makes it look like it's moving."}
+  {q:"In Scratch, what is a 'sprite'?", o:["A character or object","The project's background image","A repeating loop of code","A saved account password"], w:"A sprite is a character or object in your game; changing its 'costume' makes it look like it's moving."},
+  {q:"In the SMART rules, what does 'M' (Don't Meet Up) mean?", o:["Don't meet online-only strangers","Make lots of new accounts","Message everyone you can","Mute all your notifications"], w:"M = Don't Meet Up. Meeting someone you only know online can be dangerous; always check with an adult."},
+  {q:"In the SMART rules, what does 'T' (Tell Someone) mean?", o:["Tell an adult if you feel worried","Turn the computer off every single night","Type your full name online","Take photos of everyone"], w:"T = Tell Someone. Tell a trusted adult if anything online makes you feel worried or uncomfortable."},
+  {q:"In computing, what does 'RSI' stand for?", o:["Repetitive Strain Injury","Really Slow Internet","Random System Interruption","Rapid Screen Illumination"], w:"RSI is repetitive strain injury — damage to wrists or thumbs from repeated movements. Good posture and breaks help."},
+  {q:"What is a 'peripheral' in computing?", o:["A device that plugs into a computer","The main brain inside of the computer","A type of secret password","A repeating loop of code"], w:"A peripheral plugs in to add functionality — keyboards, mice and printers are peripherals."},
+  {q:"The 'denary' number system uses which base?", o:["Base 10, our everyday numbers","Base 2, only 0 and 1","Base 16, with letters too","Base 8, with only odds"], w:"Denary is base 10 (digits 0–9); computers convert between denary and binary."},
+  {q:"What does ASCII do?", o:["Turns denary numbers into letters","Turns pictures into loud sounds","Stops the computer overheating","Blocks all unwanted emails"], w:"ASCII is a code that turns denary numbers into letters and punctuation so text can be stored."},
+  {q:"In an image, what is a 'pixel'?", o:["A single point in the picture","The main brain of the whole computer","A repeating loop of code","A device that plugs in"], w:"A pixel is a single square/point in an image; more pixels means a higher-resolution, sharper picture."},
+  {q:"What does the 'resolution' of an image mean?", o:["How many pixels make it up","The speed of the main processor","The volume of the sound","A device that plugs in"], w:"Resolution is the number of pixels in an image, e.g. 800×600 — more pixels look sharper."},
+  {q:"In Scratch, an IF statement is also called…", o:["Selection","Iteration","A saved variable","A game sprite"], w:"An IF statement chooses what to do based on a condition — this is called selection. Looping is iteration."},
+  {q:"In Scratch, changing a sprite's 'costume' does what?", o:["Changes how the sprite looks","Repeats a set of instructions","Stores a number or score","Sets the game background"], w:"Changing a sprite's costume changes its appearance, which can make it look like it's moving."}
  ]},
  {id:"dt", name:"Design & Tech", emoji:"🔧", c:"#FFB74D", q:[
   {q:"What is an algorithm?", o:["Step-by-step instructions to solve something","A solid physical computer part","A very common type of metal","A particular kind of drawing style"], w:"An algorithm is a set of step-by-step instructions that solve a problem — a key idea in computational thinking."},
@@ -461,7 +494,20 @@ const SUBJECTS = [
   {q:"What does CAD stand for in Design & Technology?", o:["Computer Aided Design","Cutting And Drilling","Careful Accurate Drawing","Colour And Detail"], w:"CAD is Computer Aided Design — using a computer to design products accurately."},
   {q:"Cyanoacrylate is commonly known as…", o:["Superglue","Solder","Sandpaper","Hacksaw"], w:"Cyanoacrylate is the technical name for superglue."},
   {q:"Why should fabric scissors only ever be used to cut fabric?", o:["Cutting other things blunts them","They are strongly magnetic inside","They cost a lot to replace","So they always stay shiny"], w:"Cutting paper or card blunts fabric scissors, so afterwards they won't cut fabric neatly."},
-  {q:"In the textiles room, what is a 'hazard'?", o:["Something that could cause harm","A decorative type of stitch","A sewing-machine speed setting","A particular colour of thread"], w:"A hazard is anything that could cause harm — spotting hazards like pins and needles keeps you safe."}
+  {q:"In the textiles room, what is a 'hazard'?", o:["Something that could cause harm","A decorative type of stitch","A sewing-machine speed setting","A particular colour of thread"], w:"A hazard is anything that could cause harm — spotting hazards like pins and needles keeps you safe."},
+  {q:"In computing terms, what is 'software'?", o:["Instructions that tell it what to do","The physical parts inside of a computer","A common type of shiny metal","A style of technical drawing"], w:"Software is the set of instructions (programs); hardware is the physical parts."},
+  {q:"In computational thinking, what is 'evaluation'?", o:["Checking a solution does its job","Breaking a big problem into parts","Ignoring unimportant details","Spotting trends and patterns"], w:"Evaluation checks that a solution does what it was designed to do, and how it could be improved."},
+  {q:"What is 'pattern recognition'?", o:["Spotting trends to solve problems","Ignoring details you don't need","Breaking a problem into parts","Writing step-by-step instructions"], w:"Pattern recognition means spotting trends or repeated behaviours that help solve problems more efficiently."},
+  {q:"What are 'ferrous' metals?", o:["Metals that contain iron","Metals with no iron at all","Metals made only of gold","Metals that never go dull"], w:"Ferrous metals contain iron, so they are magnetic and can rust. Non-ferrous metals have no iron."},
+  {q:"Because ferrous metals contain iron, they are…", o:["Magnetic and able to rust","Never magnetic at all, ever","Never able to rust","Always extremely light"], w:"Iron makes ferrous metals magnetic and able to rust."},
+  {q:"How do we help prevent cross-contamination of food?", o:["Store different foods separately","Cook everything all at once","Leave food out for hours","Reheat it many times over"], w:"Cross-contamination is the spread of bacteria, so foods must be stored separately."},
+  {q:"Bacteria in the 'danger zone' grow fastest at about…", o:["37°C, body temperature","0°C, in the freezer","100°C, at boiling point","Minus 18 degrees Celsius"], w:"Bacteria grow fastest at around 37°C (body temperature), within the 5–63°C danger zone."},
+  {q:"Dairy gives us calcium. What helps the body use it?", o:["Vitamin D helps use calcium","Sugar helps use the calcium","Salt helps use the calcium","Fat helps use the calcium"], w:"Dairy provides calcium for strong bones and teeth, and the body needs Vitamin D to use it properly."},
+  {q:"On the Eatwell Guide, which group should be largest?", o:["Fruit and vegetables","Oils and spreads only","Sugary fizzy drinks","Cakes, sweets and crisps"], w:"Fruit, vegetables and starchy carbohydrates make up the largest parts of a balanced diet; high fat/salt/sugar foods aren't on the guide."},
+  {q:"Tonal shading uses which three tones?", o:["Light, medium and dark","Red, green and blue","Thick, thin and wavy","Big, medium and small"], w:"Tonal shading uses light, medium and dark tones to make a drawing look 3D."},
+  {q:"One-point and two-point perspective are…", o:["Ways to draw 3D objects realistically","Types of healthy daily food group","Kinds of ferrous metal","Names of sewing stitches"], w:"One-point, two-point perspective and isometric drawing are techniques for drawing 3D objects."},
+  {q:"What does 'malleable' mean?", o:["Can be hammered into shape","Breaks apart very easily","Cannot be bent at all","Melts at room temperature"], w:"A malleable material can be hammered or pressed into shape without breaking."},
+  {q:"What is a 'template' used for?", o:["Copying a shape accurately","Testing a finished product","Melting down old metal","Cooling food down safely"], w:"A template is a pattern/shape used to draw or cut the same thing accurately each time."}
  ]},
  {id:"drama", name:"Drama", emoji:"🎭", c:"#BA68C8", q:[
   {q:"Stage positions (like 'stage left') are always given from whose point of view?", o:["The actor facing the audience","The audience in their seats","The director at the back","The lighting operator's booth"], w:"Stage directions are always from the actor's point of view when standing on stage looking out at the audience."},
@@ -477,7 +523,17 @@ const SUBJECTS = [
   {q:"A 'still image' (freeze frame) in drama is…", o:["A frozen, silent pose","A fast energetic dance","A sudden loud shout","A quick costume change"], w:"A still image is a frozen, silent pose — like pressing pause — used to capture a moment or feeling."},
   {q:"'Mime' is performing using…", o:["Movement and expression, no words","Speaking in a loud voice","Performing with only music","Reading a script out loud"], w:"Mime tells a story using movement, gesture and facial expression, without any words."},
   {q:"Which of these is a tool an actor uses with their VOICE?", o:["Pitch","Gesture","Posture","Stance"], w:"Pitch (how high or low the voice is) is a vocal tool. Gesture, posture and eye contact are physical (body) tools."},
-  {q:"How can an actor use posture and body language to create a character?", o:["Change how they stand and move","Speak a little bit faster","Memorise many more lines","Stand completely still throughout"], w:"Changing posture, stance and body language tells the audience what a character is like — a confident character stands tall."}
+  {q:"How can an actor use posture and body language to create a character?", o:["Change how they stand and move","Speak a little bit faster","Memorise many more lines","Stand completely still throughout"], w:"Changing posture, stance and body language tells the audience what a character is like — a confident character stands tall."},
+  {q:"In drama, 'volume' means…", o:["How loud or quiet the voice is","How high or low the voice is","The speed of the speaking","The space between actors"], w:"Volume is how loud or quiet the voice is. Pitch is how high or low it is."},
+  {q:"In drama, 'pace' means…", o:["The speed you speak or move","How loud or soft the voice is","The space between actors","A frozen, silent pose"], w:"Pace is the speed at which you speak or move on stage."},
+  {q:"In drama, using 'levels' means…", o:["Using height to show status","Speaking as loudly as you can","Moving without any words","A group speaking together"], w:"Levels means using different heights (standing, sitting, lying) to show status, mood or relationships."},
+  {q:"In drama, a 'gesture' is…", o:["A movement of the hands or body","How high or low the voice is","The speed of the speaking","A frozen, silent pose"], w:"A gesture is a movement of the hands or body to add meaning."},
+  {q:"What is 'choral speaking'?", o:["A group speaking words together","One single actor speaking alone","Moving without any words","A frozen, silent pose"], w:"Choral speaking is when a group speaks lines together, in unison."},
+  {q:"What are the rules for a still image?", o:["Freeze, stay silent, hold a pose","Move slowly all around the stage","Speak your lines out loud","Change your costume quickly"], w:"In a still image you freeze, stay silent and hold a clear pose to capture a moment."},
+  {q:"In drama, an 'accent' is…", o:["How words sound in a region","The speed that you speak at","How loud the voice is","A movement of the hands"], w:"An accent is the way speech sounds in a particular place or group; actors use it to build character."},
+  {q:"In drama, 'posture' means…", o:["The way you hold your body","How loud or quiet the voice is","The speed of speaking","A group speaking together"], w:"Posture is how you hold your body, which can show a character's age, mood or confidence."},
+  {q:"A 'facial expression' is used to…", o:["Show feelings using the face","Speak your lines out loud","Fill the space on stage","Make a group speak together"], w:"Facial expressions show a character's emotions through the face."},
+  {q:"On a stage, 'downstage' is the area…", o:["Nearest to the audience","Furthest from the audience","On the far left side","Above the acting space"], w:"Downstage is the area nearest the audience; upstage is furthest away. Directions are from the actor's point of view."}
  ]},
  {id:"english", name:"English", emoji:"📖", c:"#E57373", q:[
   {q:"What does 'culture' mean?", o:["Shared ideas and traditions","One single person's opinion","A particular type of poem","A strict rule of grammar"], w:"Culture is the pattern of behaviour, ideas and traditions shared by a society or group of people."},
@@ -494,7 +550,20 @@ const SUBJECTS = [
   {q:"Who wrote the novel 'Windrush Child', studied in the Freedom & Injustice unit?", o:["Benjamin Zephaniah","Michelle Obama","Amanda Gorman","Charles Dickens"], w:"'Windrush Child' was written by Benjamin Zephaniah, telling the story of the Windrush generation coming to Britain."},
   {q:"The word meaning to keep people apart from one another is…", o:["Segregation","Compassion","Tolerance","Tradition"], w:"Segregation is the action of separating people or things to keep them apart."},
   {q:"Which of these is a typical feature of a Gothic story?", o:["A dark, sinister atmosphere","A cheerful seaside setting","An ordinary maths lesson","A simple shopping list"], w:"Gothic stories use dark, sinister, mysterious atmospheres — often gloomy, dilapidated (decayed) settings to create fear."},
-  {q:"'Pathetic fallacy' is when a writer…", o:["Weather reflects a character's mood","Telling an amusing little joke","Packing the page with facts","Writing the whole thing in French"], w:"Pathetic fallacy gives the weather human feelings to match the mood — e.g. storm clouds gathering before something bad happens."}
+  {q:"'Pathetic fallacy' is when a writer…", o:["Weather reflects a character's mood","Telling an amusing little joke","Packing the page with facts","Writing the whole thing in French"], w:"Pathetic fallacy gives the weather human feelings to match the mood — e.g. storm clouds gathering before something bad happens."},
+  {q:"In DAFOREST, a 'Fact' is…", o:["A statement you can prove true","Someone's personal point of view","A question needing no answer","A list of three for effect"], w:"In DAFOREST, a Fact is a statement that is true and can be proven."},
+  {q:"In DAFOREST, an 'Opinion' is…", o:["A personal point of view","A statement always proven true","A list of three for effect","Words that begin the same"], w:"An Opinion is someone's point of view; it isn't always based on fact."},
+  {q:"In DAFOREST, 'Statistics' are…", o:["Facts given as numbers or percentages","A single personal point of view","A list of three for effect","A question needing no answer"], w:"Statistics are facts in numerical form (fractions or percentages) used to convince the reader."},
+  {q:"What is a 'Triple' (rule of three)?", o:["A list of three for effect","A question that needs no answer","Repeating one word twice","A comparison using 'like'"], w:"A Triple (rule of three) lists three words or phrases in a row to emphasise an idea."},
+  {q:"What does the technique 'repetition' do?", o:["Repeats a word for effect","Compares things using 'like'","Asks a question needing no answer","Lists exactly three items"], w:"Repetition means repeating a word, phrase or sentence for effect."},
+  {q:"What is 'emotive language'?", o:["Words chosen to stir emotion","Facts given as plain numbers","A question needing no answer","A list of three short items"], w:"Emotive language uses words deliberately chosen to create emotion in the reader."},
+  {q:"What is a 'simile'?", o:["A comparison using 'like' or 'as'","Saying one thing simply IS another","A question needing no answer","Repeating a single word twice"], w:"A simile compares two things using 'like' or 'as'. A metaphor says one thing IS another."},
+  {q:"In English, 'identity' means…", o:["Who or what a person is","A shared way of daily living","The unfair treatment of others","Handing down old customs"], w:"Identity is the fact of who or what a person is."},
+  {q:"A 'tradition' is…", o:["Customs handed down the generations","Who or what a person is","The unfair treatment of others","A comparison using 'like'"], w:"A tradition is information, beliefs or customs handed down from one generation to another."},
+  {q:"In a story, the 'protagonist' is…", o:["The main character","The obvious villain","The book's author","The person reading it"], w:"The protagonist is the main character in a story."},
+  {q:"What is 'foreshadowing'?", o:["Hinting at events still to come","Repeating the same word for effect","Comparing with 'like' or 'as'","Listing exactly three items"], w:"Foreshadowing is when a writer drops clues hinting at what will happen later."},
+  {q:"In a Gothic story, 'dilapidated' means…", o:["Run-down and falling apart","Bright, clean and brand new","Extremely rich and grand","Loud, busy and cheerful"], w:"'Dilapidated' means run-down and decayed — a classic Gothic setting."},
+  {q:"The word 'sinister' means…", o:["Hinting at something evil","Bright, happy and cheerful","Rich, grand and spotless","Loud, fast and busy"], w:"'Sinister' means giving the impression that something evil or harmful is happening."}
  ]},
  {id:"french", name:"French", emoji:"🇫🇷", c:"#64B5F6", q:[
   {q:"What does 'Bonjour' mean?", o:["Hello","Goodbye","Thank you","Please"], w:"'Bonjour' means hello. 'Au revoir' means goodbye."},
@@ -510,7 +579,18 @@ const SUBJECTS = [
   {q:"'Dans la salle de classe, il y a…' means…", o:["In the classroom, there is","Inside my school bag there is","I would really like a","I do not have any"], w:"'Il y a' means 'there is / there are'. 'Dans la salle de classe' = in the classroom."},
   {q:"Why do some French words use 'un' and others 'une'?", o:["Nouns are masculine or feminine","It depends on word length","It is completely random really","Based on the very first letter"], w:"French nouns have a gender — masculine words take 'un', feminine words take 'une'."},
   {q:"'Comment ça va?' means…", o:["How are you?","How old are you?","What is your name?","Where do you live?"], w:"'Comment ça va?' (or 'Ça va?') asks how you are. You might reply 'Ça va bien' (I'm well)."},
-  {q:"A 'liaison' in French is when…", o:["A silent letter becomes sounded","You shout out a word","You skip over a word","You spell a word aloud"], w:"In a liaison a normally-silent final letter links onto the next word if it starts with a vowel or silent h — 'les enfants' sounds like 'lay-z-enfants'."}
+  {q:"A 'liaison' in French is when…", o:["A silent letter becomes sounded","You shout out a word","You skip over a word","You spell a word aloud"], w:"In a liaison a normally-silent final letter links onto the next word if it starts with a vowel or silent h — 'les enfants' sounds like 'lay-z-enfants'."},
+  {q:"What does 'Merci' mean?", o:["Thank you","Hello there","Goodbye now","Sorry, excuse me"], w:"'Merci' means thank you."},
+  {q:"What does 'S'il vous plaît' mean?", o:["Please","Thank you","Goodbye now","Hello there"], w:"'S'il vous plaît' means please."},
+  {q:"What does 'Au revoir' mean?", o:["Goodbye","Hello","Please","Thank you"], w:"'Au revoir' means goodbye; 'bonjour' means hello."},
+  {q:"In French, where does a colour usually go?", o:["After the noun it describes","Right before the noun always","Colours are never used","Only starting a sentence"], w:"In French the colour adjective usually comes after the noun, e.g. 'un chat noir' (a black cat)."},
+  {q:"What does 'un chien' mean?", o:["A dog","A cat","A mouse","A rabbit"], w:"'Un chien' is a dog; 'un chat' is a cat."},
+  {q:"What does 'mon frère' mean?", o:["My brother","My sister","My mother","My father"], w:"'Mon frère' means my brother; 'ma sœur' is my sister."},
+  {q:"In French, 'j'ai' means…", o:["I have","You are","They go","We like"], w:"'J'ai' means 'I have' — French uses 'have' for age too ('j'ai douze ans')."},
+  {q:"'Un, deux, trois' in French means…", o:["One, two, three","Four, five, six","Red, blue, green","Monday, Tuesday, Wednesday"], w:"'Un, deux, trois' means one, two, three."},
+  {q:"What does an accent (like é) do to a letter?", o:["Changes how it is pronounced","Makes the whole word plural","Shows it is a question","Means the word 'and'"], w:"An accent such as é changes the way a letter is pronounced."},
+  {q:"What does the cédille (ç) do?", o:["Softens the c to an 's' sound","Makes the word plural","Shows that it is a real question","Means the word is loud"], w:"The cédille (ç) softens the 'c' to an 's' sound, as in 'français'."},
+  {q:"In French, 'les' means…", o:["'The' before plural nouns","'A' before one thing","The word for 'and'","The word for 'not'"], w:"'Les' is 'the' used before plural nouns; 'le' and 'la' are singular."}
  ]},
  {id:"geography", name:"Geography", emoji:"🗺️", c:"#4DB6AC", q:[
   {q:"A map shows a place as seen from…", o:["A bird's-eye view from above","A side-on view from ground","A view looking straight up","A view from inside buildings"], w:"A map is a drawing of a place seen from above — a bird's-eye view."},
@@ -527,7 +607,15 @@ const SUBJECTS = [
   {q:"Why would you use a six-figure grid reference instead of a four-figure one?", o:["To pinpoint a place accurately","To make it much shorter","To show the height too","To measure a rough distance"], w:"A six-figure reference splits each square into tenths, locating a place far more precisely than four figures."},
   {q:"On a 1:25 000 map, 1 cm on the map equals how much in real life?", o:["250 m in real life","25 cm in real life","25 m in real life","25 km in real life"], w:"A scale of 1:25 000 means 1 cm on the map represents 25 000 cm — that's 250 m on the ground."},
   {q:"Why does every map need a scale?", o:["To work out real distances","To make it more colourful","So it fits on paper","To show where north is"], w:"You can't draw a map life-size, so the scale tells you how much smaller it is — letting you convert map distances into real ones."},
-  {q:"What's the best way to measure a road that is NOT straight?", o:["Follow it with a string","Use a straight steel ruler","Simply guess the distance","Count all the contour lines"], w:"A ruler only works for straight lines, so for a winding road follow it with string or paper's edge, then compare to the scale bar."}
+  {q:"What's the best way to measure a road that is NOT straight?", o:["Follow it with a string","Use a straight steel ruler","Simply guess the distance","Count all the contour lines"], w:"A ruler only works for straight lines, so for a winding road follow it with string or paper's edge, then compare to the scale bar."},
+  {q:"On an OS map, the interval between contour lines is usually…", o:["Five metres between lines","One metre between lines","A hundred metres apart","No set interval at all"], w:"The interval between contour lines is usually five metres (ten in mountainous areas)."},
+  {q:"What colour are contour lines on an OS map?", o:["Orange","Blue","Black","Green"], w:"Contour lines are shown in orange on Ordnance Survey maps."},
+  {q:"Why do maps use symbols instead of words?", o:["Too many features to label with text","To make the whole map more colourful","Because words are not allowed","To make the map much smaller"], w:"There are too many features to write out, so symbols (letters, colours, pictures, lines) show them instead."},
+  {q:"What does an eight-point compass add?", o:["NE, SE, NW and SW directions","It removes both north and south","It shows only north","It shows height instead"], w:"An eight-point compass adds north-east, south-east, north-west and south-west for more precise directions."},
+  {q:"Which compass is the most precise?", o:["A sixteen-point compass","A four-point compass","A two-point compass","A one-point compass"], w:"A sixteen-point compass is the most precise, adding directions like north-north-east."},
+  {q:"What is the 'scale bar' on a map for?", o:["Measuring real-life distances","Listing all the map symbols","Showing the land's height","Giving the map its title"], w:"The scale bar is a small ruler (usually at the bottom) used to work out real distances."},
+  {q:"On a 1:100 000 map, 1 cm equals…", o:["1 km in real life","1 metre in real life","10 km in real life","1 cm in real life"], w:"On a 1:100 000 map, 1 cm represents 1 km on the ground."},
+  {q:"A four-figure grid reference is used to…", o:["Identify a whole grid square","Show the map's total height","Name a whole country","Measure the temperature"], w:"A four-figure grid reference identifies a whole grid square; six figures pinpoint a spot within it."}
  ]},
  {id:"history", name:"History", emoji:"🏛️", c:"#C0A184", q:[
   {q:"In the Palaeolithic period, how did humans get their food?", o:["Hunting animals and gathering plants","Farming crops in large fields","Buying it from busy markets","Keeping big herds of cattle"], w:"Palaeolithic humans were hunter-gatherers (nomads) who followed animal herds and gathered wild plants, rather than farming."},
@@ -544,7 +632,23 @@ const SUBJECTS = [
   {q:"The Roman 'Tortoise' (testudo) tactic was used to…", o:["Shields protected them from arrows","To break down castle walls","To cross deep, fast rivers","To signal loudly for help"], w:"In the Tortoise, soldiers locked shields around and above them to protect the group from spears and arrows while advancing."},
   {q:"Why was there a contest for the English throne in 1066?", o:["Edward died without an heir","England had no king before","War destroyed the royal family","The Pope had banned kings"], w:"Edward the Confessor died in January 1066 with no heir, so several men claimed the throne, leading to the battles of 1066."},
   {q:"Why did William of Normandy believe he should be King of England?", o:["Edward promised him the throne","He was Edward's own son","He won a public election","The Witan had chosen him"], w:"William said Edward promised him the throne in 1051 and that Harold swore a holy oath to back him — so the Pope supported William when Harold was crowned."},
-  {q:"What was the job of the Witan in Anglo-Saxon England?", o:["Choose the next king","Collect taxes from people","Lead the whole army","Build castles across England"], w:"The Witan was the council of the most powerful men, whose role was to choose the next king when there was no accepted heir. They backed Harold Godwinson."}
+  {q:"What was the job of the Witan in Anglo-Saxon England?", o:["Choose the next king","Collect taxes from people","Lead the whole army","Build castles across England"], w:"The Witan was the council of the most powerful men, whose role was to choose the next king when there was no accepted heir. They backed Harold Godwinson."},
+  {q:"What is an 'empire'?", o:["Lands ruled by one powerful state","A single small farming village","A type of Stone Age tool","A prehistoric hunting party"], w:"An empire is a group of countries or lands ruled by one more powerful state."},
+  {q:"What is an 'emperor'?", o:["The ruler of an empire","A common foot soldier","A farmer who trades goods","A prehistoric cave hunter"], w:"An emperor is the ruler of an empire."},
+  {q:"What does 'BC' mean when dating events?", o:["Before Christ, dates before Jesus","The years after Jesus lived","A type of Roman gold coin","A Roman army battle tactic"], w:"BC means 'Before Christ'. The bigger the BC number, the longer ago it was."},
+  {q:"What does 'AD' mean when dating events?", o:["Dates after the birth of Jesus","Dates long before Jesus lived","A kind of Roman battle shield","A prehistoric hunting tool"], w:"AD ('Anno Domini') is used for dates after the birth of Jesus."},
+  {q:"What does 'chronology' mean?", o:["Putting events in date order","Digging up ancient objects","A group of Roman soldiers","A settled farming village"], w:"Chronology is arranging dates or events in the order they happened."},
+  {q:"What is an 'archaeologist'?", o:["Someone who digs up the past","A ruler of a huge empire","A leader of five thousand men","A writer of history essays"], w:"An archaeologist learns about the past by digging up and studying artefacts (objects made by humans)."},
+  {q:"Who were 'nomads'?", o:["People who moved to find food","People settled in just one town","The rulers of an empire","Soldiers within a legion"], w:"Nomads (hunter-gatherers) moved from place to place to hunt animals and gather food."},
+  {q:"What is a 'revolt'?", o:["People rising against their rulers","A group of five thousand men","A settled farming village","A tool made out of stone"], w:"A revolt is when people refuse to be ruled and take action against their rulers."},
+  {q:"Who was Boudica?", o:["Leader of the Iceni who revolted","The very first ever Roman emperor","A Norman who invaded England","A Neolithic farming woman"], w:"Boudica led the Iceni tribe in a revolt against the Romans, which failed in 60 AD."},
+  {q:"Who conquered Britain in 43 AD?", o:["Emperor Claudius","Julius Caesar","William of Normandy","The leader Boudica"], w:"Emperor Claudius conquered Britain in 43 AD."},
+  {q:"Why was Hadrian's Wall built?", o:["To keep the Picts of Scotland out","To store the whole army's spare food","To trade goods over with France","To grow crops safely behind it"], w:"Hadrian's Wall was built to keep the Picts of Scotland out of Roman Britain."},
+  {q:"How was a Roman legion divided?", o:["Into ten cohorts of soldiers","Into just eighty farmers","Into a single small century","Into tribes outside Rome"], w:"A legion (about 5,000 men) was split into ten cohorts; a century of 80 men was led by a centurion."},
+  {q:"Who won the Battle of Hastings in 1066?", o:["William beat Harold Godwinson","Harold beat William of Normandy","The Romans beat the Iceni","Hardrada beat Harold Godwinson"], w:"At the Battle of Hastings (1066), William of Normandy defeated Harold and became King of England."},
+  {q:"What happened at Stamford Bridge in 1066?", o:["Harold beat Harald Hardrada","William beat Harold Godwinson","The Romans beat the Iceni","Edgar beat William of Normandy"], w:"At Stamford Bridge, Harold Godwinson defeated the invading Harald Hardrada, just before Hastings."},
+  {q:"Who was Harald Hardrada?", o:["The King of Norway who invaded","The Duke of Normandy in France","A powerful Roman emperor","A settled Neolithic farmer"], w:"Harald Hardrada, King of Norway, invaded England claiming the throne, but lost at Stamford Bridge."},
+  {q:"What was the 'Feudal System'?", o:["How William organised land and loyalty","A Roman army battle formation","A prehistoric farming tool","A type of grey stone castle"], w:"After winning, William built castles and set up the Feudal System to control England's land and people."}
  ]},
  {id:"maths", name:"Maths", emoji:"➗", c:"#7986CB", q:[
   {q:"Simplify: g + g + g + g", o:["4g","g4","4 + g","g to power 4"], w:"Adding four lots of g is 4 × g, written as 4g."},
@@ -560,7 +664,21 @@ const SUBJECTS = [
   {q:"Find the mean of 6, 8, 2, 8.", o:["6","8","24","4"], w:"Add them (6 + 8 + 2 + 8 = 24) then divide by how many there are (4): 24 ÷ 4 = 6."},
   {q:"Which of these is equal to 1/2?", o:["0.5 and 50%","0.2 and 20%","0.25 and 25%","0.75 and 75%"], w:"A half can be written as the fraction 1/2, the decimal 0.5 or the percentage 50% — all equivalent."},
   {q:"What is 10% of 820?", o:["82","8.2","820","8200"], w:"10% means one tenth, so divide by 10: 820 ÷ 10 = 82."},
-  {q:"A pie chart's angles always add up to 360°. Why?", o:["A full circle is 360°","There are about 360 days","360 is a round number","Pie charts have six slices"], w:"A pie chart is a full circle, and a circle is 360°, so all the sector angles must total 360."}
+  {q:"A pie chart's angles always add up to 360°. Why?", o:["A full circle is 360°","There are about 360 days","360 is a round number","Pie charts have six slices"], w:"A pie chart is a full circle, and a circle is 360°, so all the sector angles must total 360."},
+  {q:"What does the symbol ≠ mean?", o:["Not equal to","Exactly equal to","Add these together","Multiply these together"], w:"The symbol ≠ means 'not equal to'."},
+  {q:"What does the symbol ≤ mean?", o:["Less than or equal to","Greater than only, never equal","Exactly equal to always","Multiply the two together"], w:"The symbol ≤ means 'less than or equal to'; ≥ means 'greater than or equal to'."},
+  {q:"What does the symbol ≡ mean?", o:["Equivalent to","Not equal to","Less than only","Divide these two"], w:"The ≡ symbol means 'equivalent to' — the expressions are always equal."},
+  {q:"What is an 'integer'?", o:["A whole number","A top-heavy fraction","A rounded-off decimal","A negative minus sign"], w:"An integer is a whole number (it can be positive, negative or zero)."},
+  {q:"In 5c, the number 5 is called the…", o:["Coefficient","Whole equation","Equals sign","Final answer"], w:"A coefficient is the number in front of a variable, e.g. the 5 in 5c."},
+  {q:"How do you tell an expression from an equation?", o:["An expression has no equals sign","An expression always has equals","An expression is a whole number","An expression is just a fraction"], w:"An expression (like 3a + 2) has no equals sign; an equation (like 3a + 2 = 8) does."},
+  {q:"What are the 'factors' of a number?", o:["Numbers that divide in exactly","The times-table answers","Only the even whole numbers","Numbers you round upward"], w:"Factors divide into a number exactly, e.g. the factors of 6 are 1, 2, 3 and 6."},
+  {q:"What are the 'multiples' of a number?", o:["Its times-table answers","Numbers that divide into it","Only its even numbers","Numbers you round downward"], w:"Multiples are a number's times-table answers, e.g. multiples of 9 are 9, 18, 27…"},
+  {q:"What is the 'lowest common multiple' (LCM)?", o:["The smallest shared multiple","The largest shared factor","The middle value in order","The biggest minus smallest"], w:"The LCM is the smallest number that is a multiple of both numbers."},
+  {q:"In the Fibonacci sequence, each term is found by…", o:["Adding the previous two terms","Doubling the one previous term","Adding three every time","Subtracting two each time"], w:"In the Fibonacci sequence each term is the sum of the previous two."},
+  {q:"In the sequence 1, 3, 9, 27… how do you get each term?", o:["Multiply by the same number","Add the same number on","Subtract a number each time","The numbers stay the same"], w:"You multiply by 3 each time — a non-linear (geometric) sequence."},
+  {q:"On a pie chart, one 'slice' is called a…", o:["Sector","Median","Mean value","Whole answer"], w:"A sector is a 'slice' of a pie chart; all sectors add up to 360°."},
+  {q:"What is the difference between area and perimeter?", o:["Area is the space inside a shape","Area is the total distance around it","Area is the longest single side","Area is the number of corners"], w:"Area is the space inside a shape; perimeter is the distance all the way around."},
+  {q:"Round 0.37 to 1 significant figure.", o:["0.4","0.3","0.04","4.0"], w:"The first significant figure is the 3; the next digit is 7, so round up to 0.4."}
  ]},
  {id:"music", name:"Music", emoji:"🎵", c:"#F06292", q:[
   {q:"In music, 'dynamics' refers to…", o:["The volume","The speed","The pitch","The instruments"], w:"Dynamics means how loud or quiet the music is — e.g. forte (loud), piano (quiet)."},
@@ -576,7 +694,19 @@ const SUBJECTS = [
   {q:"How do brass instruments make their sound?", o:["The player's lips vibrate","By hitting them hard","Air over a hole","Plucking tight strings"], w:"Brass instruments are metal, and the sound vibrations are made by the player's lips buzzing."},
   {q:"When a string instrument is plucked instead of bowed, it is called…", o:["Pizzicato","Staccato","Crescendo","Legato"], w:"Strings are usually bowed but can be plucked — this is called pizzicato."},
   {q:"Why are percussion instruments split into 'tuned' and 'untuned'?", o:["Tuned ones play different pitches","One group is much louder","One group is made of metal","One group is far older"], w:"Tuned percussion can play different pitches (notes); untuned percussion like a drum makes sound but not set pitches."},
-  {q:"On a ukulele, what does a 'capo' do?", o:["Clamps strings to raise pitch","Tightens the strings for tuning","Cleans the four dusty strings","Holds the ukulele up straight"], w:"A capo clamps onto the strings to raise their pitch, letting a musician change key easily."}
+  {q:"On a ukulele, what does a 'capo' do?", o:["Clamps strings to raise pitch","Tightens the strings for tuning","Cleans the four dusty strings","Holds the ukulele up straight"], w:"A capo clamps onto the strings to raise their pitch, letting a musician change key easily."},
+  {q:"In music, 'piano' as a dynamic means…", o:["Quiet volume","Loud volume","Fast speed","Slow speed"], w:"In music 'piano' means quiet; 'forte' means loud."},
+  {q:"What does 'staccato' mean?", o:["Short, detached notes","Long, smooth notes","Two notes played together","Gradually getting louder"], w:"Staccato means short, detached notes; legato means smooth and connected."},
+  {q:"What does 'legato' mean?", o:["Smooth, connected notes","Short, detached notes","Suddenly very loud notes","Two notes played at once"], w:"Legato means smoothly connected notes; staccato means short and detached."},
+  {q:"What is a 'chord'?", o:["Two or more notes played together","One single note played all alone","How loud the music is","The speed of the music"], w:"A chord is two or more notes played at the same time."},
+  {q:"What makes up the 'woodwind' family?", o:["Flutes and reed instruments","Metal instruments you buzz","Instruments that are hit","Instruments with only strings"], w:"Woodwind splits into flutes (air over a hole) and reeds (a bamboo reed vibrates)."},
+  {q:"How are string instruments usually played?", o:["With a bow, or plucked","Only by hitting them hard","Only by buzzing your lips","Only by blowing across them"], w:"String instruments are usually played with a bow but can be plucked, called pizzicato."},
+  {q:"In music, 'tonality' describes…", o:["Whether it is major or minor","How loud or soft the piece is","The speed of the piece","The main tune played"], w:"Tonality describes whether a piece sounds major or minor."},
+  {q:"What is an 'ensemble'?", o:["A group of musicians","A single solo player","A very loud section","The main tune line"], w:"An ensemble is a group of musicians playing together."},
+  {q:"What is 'syncopation'?", o:["Off-beat rhythms","Steady on-beat rhythms","Very slow smooth notes","Two notes played together"], w:"Syncopation means off-beat rhythms that fall between the main beats."},
+  {q:"On a ukulele, what are the 'frets'?", o:["Segments dividing the neck","Pegs used for tuning","The large hollow body","A group of musicians"], w:"The frets are the segments that divide the neck of the ukulele."},
+  {q:"What is a 'ukulele'?", o:["A small four-stringed guitar","A large brass instrument","A type of drum kit","A woodwind instrument"], w:"A ukulele is a small four-stringed guitar of Hawaiian origin."},
+  {q:"On a ukulele, what do the 'tuners' do?", o:["Change the pitch of the strings","Divide up the whole long neck","Make it louder to hear","Hold the ukulele upright"], w:"The tuners are pegs you turn to change the pitch of the strings."}
  ]},
  {id:"pe", name:"PE", emoji:"⚽", c:"#81C784", q:[
   {q:"Why do we do a 'pulse raiser' at the start of a warm-up?", o:["Raises heart rate for oxygen","To cool the body down","To stretch out the muscles","To end the whole session"], w:"A pulse raiser increases your heart rate, pumping more oxygen-rich blood to the muscles ready for exercise."},
@@ -593,7 +723,22 @@ const SUBJECTS = [
   {q:"Why should your standing foot be next to the ball when you pass?", o:["It helps you pass accurately","It makes the ball rise","It is simply a rule","It saves lots of energy"], w:"Placing your standing (non-kicking) foot beside the ball helps you control the direction and pass accurately."},
   {q:"In netball, once you land with the ball you must…", o:["Don't move your landing foot","Run freely with the ball","Bounce the ball first","Hold it for ten seconds"], w:"The footwork rule: after a 1-2 landing you can't move your landing foot. You also have only 3 seconds to release the ball."},
   {q:"In netball, which TWO positions are allowed to shoot for goal?", o:["Goal Shooter and Goal Attack","Centre and Wing Attack","Goal Keeper and Goal Defence","Any player on the court"], w:"Only the GS and GA can score, and only from inside the shooting circle."},
-  {q:"Why is only ONE person allowed on a trampoline at a time?", o:["Safety — to avoid collisions","To save more space","So it lasts longer","Just to take turns"], w:"One person bounces at a time to stay safe; more people risks collisions and losing control. You stop using the 'kill bed'."}
+  {q:"Why is only ONE person allowed on a trampoline at a time?", o:["Safety — to avoid collisions","To save more space","So it lasts longer","Just to take turns"], w:"One person bounces at a time to stay safe; more people risks collisions and losing control. You stop using the 'kill bed'."},
+  {q:"How does a badminton game start?", o:["A diagonal serve, right to right","A straight serve down the middle","A serve backwards over the head","A serve from anywhere at all"], w:"A badminton game starts with a diagonal serve (right to right) that must pass the service line."},
+  {q:"In badminton, an 'overhead clear' is…", o:["A defensive shot to the back","A gentle shot near the net","A serve from below the waist","A quick pass to a teammate"], w:"The overhead clear is a defensive shot played high to the back of your opponent's court."},
+  {q:"What is a good badminton 'ready position'?", o:["Balanced, on toes, racket up","Sitting down at the back","Facing away from the net","Lying flat on the court"], w:"The ready position is balanced and side-on, on your toes with the racket up, ready to move."},
+  {q:"How many players are on each basketball team?", o:["Five players per team","Nine players per team","Eleven players per team","Seven players per team"], w:"Basketball is played with two teams of five."},
+  {q:"In basketball, how long can you hold the ball?", o:["No longer than five seconds","As long as you want to","Up to a full minute","Only about one second"], w:"A player can't hold the ball for longer than five seconds without passing, shooting or dribbling."},
+  {q:"Is basketball a contact sport?", o:["No, it is a non-contact sport","Yes, full body tackling is allowed","Yes, you must push players","Yes, holding players is fine"], w:"Basketball is non-contact — hitting, pushing and holding are personal fouls."},
+  {q:"Where can you take a pulse?", o:["The wrist (radial) or neck (carotid)","The neck (radial) or wrist (carotid)","Only on both of the ankles","Only across the shoulders"], w:"You can take a pulse at the radial site (wrist) or the carotid site (neck)."},
+  {q:"Why is stretching part of a warm up?", o:["It increases range of motion","It makes muscles much weaker","It fully cools the body down","It raises the heart rate most"], w:"Stretching increases blood flow and range of motion at the joints, reducing the risk of injury."},
+  {q:"In football, a side-foot pass is…", o:["Accurate over a short distance","Powerful over a long distance","Used only for heading balls","Used only by the goalkeeper"], w:"A side-foot pass is accurate over short distances; a driven pass travels further along the floor."},
+  {q:"In football, when is a throw-in taken?", o:["When the ball crosses the touchline","After every single goal scored","From the centre spot each time","Only by the team's goalkeeper"], w:"A throw-in (kick-in on Astroturf) is taken when the ball crosses the side touchline."},
+  {q:"In netball, the centre pass must be…", o:["Caught in the centre third","Caught in the shooting circle","Caught behind the goal line","Caught outside the whole court"], w:"The game starts with a centre pass, which must be caught in the centre third."},
+  {q:"As the netball moves down court, it must…", o:["Be touched in every third","Skip straight over a third","Only ever go backwards","Bounce in each third first"], w:"The ball must be touched in each third of the court as it moves down."},
+  {q:"When defending in netball, you must…", o:["Stay one metre from the player","Stand right against the player","Stay ten metres well back","Not defend the player at all"], w:"When defending you must stand one metre from the player with the ball; there is no contact."},
+  {q:"How do you stop safely on a trampoline?", o:["Use the 'kill bed' to stop","Jump straight off the side quickly","Grab another bouncer near you","Sit down while mid-bounce"], w:"To stop safely when you lose control, use the 'kill bed' — bend your knees to absorb the bounce."},
+  {q:"What are the four basic trampoline shapes?", o:["Straight, tuck, straddle and pike","Chest, bounce, set and lay","Serve, clear, drop and smash","Sprint, dodge, mark and pass"], w:"The four basic trampoline shapes are straight, tuck, straddle and pike."}
  ]},
  {id:"re", name:"RE", emoji:"✝️", c:"#FFD54F", q:[
   {q:"In RE, 'revelation' means…", o:["How God reveals himself","A weekly church service","A short spoken prayer","A particular type of Bible"], w:"Revelation is how God shows humans what he is like."},
@@ -610,7 +755,23 @@ const SUBJECTS = [
   {q:"The 'Incarnation' means…", o:["God came to earth as Jesus","The moment when Jesus finally died","The time the Bible was written","A special type of daily prayer"], w:"'Incarnate' means 'made flesh', so the Incarnation is God coming to earth in human form as Jesus — celebrated at Christmas."},
   {q:"'Hypostatic union' describes the belief that Jesus is…", o:["Fully human and fully God","Half a man, half God","Only human, nothing more","Only God, not human"], w:"The hypostatic union means Jesus is fully man AND fully God — not half and half."},
   {q:"'Arianism' was a heresy that denied…", o:["That Jesus was truly God","That the Bible is true","That God made the world","That Jesus ever really existed"], w:"Arianism was a heresy (a belief against true Christian teaching) that denied Jesus was truly God. St Athanasius argued against Arius."},
-  {q:"The title 'Christ' comes from a Greek word meaning…", o:["Anointed one, the Messiah","A wise old teacher","The King of Rome","A humble local fisherman"], w:"'Christ' comes from the Greek 'Christos', meaning 'anointed one' (Messiah) — someone chosen by God."}
+  {q:"The title 'Christ' comes from a Greek word meaning…", o:["Anointed one, the Messiah","A wise old teacher","The King of Rome","A humble local fisherman"], w:"'Christ' comes from the Greek 'Christos', meaning 'anointed one' (Messiah) — someone chosen by God."},
+  {q:"What is the 'Trinity'?", o:["God is three in one","God is only one person","God is many equal gods","God is a human being"], w:"The Trinity is the Christian belief that God is three in one — Father, Son and Holy Spirit."},
+  {q:"In this unit, how is 'God' described?", o:["The eternal being who made all","A very powerful human king ruler","One of many equal gods","A holy book of laws"], w:"God is the eternal, supreme being who created all things."},
+  {q:"What does 'Scripture' mean?", o:["Sacred texts — the Bible","A talk given by the priest","A part of the Mass only","A prayer said each day"], w:"Scripture means sacred/holy texts; for Christians this is the Bible."},
+  {q:"What is the 'canon' of the Bible?", o:["The set of books that form it","A prayer said aloud during the Mass","The Latin word for God","A talk after the reading"], w:"The canon is the official set of texts that make up the Bible."},
+  {q:"What is the 'Old Testament'?", o:["The part written before Jesus","The part written after Jesus","A single short spoken prayer","A talk given during Mass"], w:"The Old Testament is the first, biggest section of the Bible, set before Jesus was born."},
+  {q:"What is the 'New Testament'?", o:["The part written after Jesus","The part written before Jesus","A prayer said each morning","The Latin word for God"], w:"The New Testament is the second section of the Bible, set after Jesus was born."},
+  {q:"What language was the Old Testament first written in?", o:["Hebrew","Latin","English","Italian"], w:"The Old Testament was originally written in Hebrew, the language of the Jewish people."},
+  {q:"What language did Jesus speak?", o:["Aramaic","Only Latin","Modern English","Ancient Chinese"], w:"Aramaic was the everyday language that Jesus and his disciples spoke."},
+  {q:"What is the 'Liturgy of the Word'?", o:["The part of Mass with Bible readings","A prayer said only at bedtime","The Latin name given to God","The very last book of the Bible"], w:"The Liturgy of the Word is the part of Mass where the Bible is read and the priest gives a homily."},
+  {q:"The title 'Son of Man' shows that Jesus was…", o:["Fully human as well as God","Only God and never human","A powerful Roman ruler","A book of the Old Testament"], w:"'Son of Man' is a title for Jesus showing he was fully human as well as God."},
+  {q:"The title 'Son of God' shows that Jesus was…", o:["Fully divine as well as human","Only human and never God","A Roman army commander","A book of the New Testament"], w:"'Son of God' is a title showing Jesus was fully divine (God) as well as human."},
+  {q:"The title 'Lord' shows that Jesus is…", o:["Ruler of all, with full authority","Only a human like everyone","A Roman soldier in a legion","A single book of the Bible"], w:"'Lord' is a title of absolute authority, showing Jesus is ruler of all."},
+  {q:"What is the 'Nicene Creed'?", o:["The main Christian statement of belief","A single Old Testament book","A prayer said only at Easter","A talk given by the local priest"], w:"The Nicene Creed is the main Christian statement of belief and stresses the Incarnation."},
+  {q:"What did Jerome do with the Bible?", o:["Translated it into Latin (the Vulgate)","Wrote the very first ever Gospel","Ruled over the Roman Empire","Invented the printing press"], w:"Jerome translated the Bible into Latin; this version is called the Vulgate."},
+  {q:"What did John Wycliffe do in 1385?", o:["Translated the Bible into English","Translated it into Latin first","Ruled as a Roman emperor","Wrote the book of Genesis"], w:"John Wycliffe translated the Bible into English in 1385."},
+  {q:"What are the 'Psalms'?", o:["Poems and songs used in worship","A set of ancient Roman laws","The last Gospel ever written","A talk given during the Mass"], w:"The Psalms are poetry, meant to be set to music and prayed in worship."}
  ]},
  {id:"science", name:"Science", emoji:"🔬", c:"#4DD0E1", q:[
   {q:"Which is a correct laboratory safety rule?", o:["Always wear eye protection","Eat while you work","Run between the benches","Leave long hair loose"], w:"Always wear eye protection, tie long hair back, and never eat or drink in the lab."},
@@ -627,7 +788,35 @@ const SUBJECTS = [
   {q:"What happens when you add an alkali to an acid?", o:["They form salt and water","The whole mixture always explodes","Nothing at all happens","The whole mixture quickly freezes"], w:"Acid + alkali → salt + water. This neutralisation gives a neutral pH 7, turning universal indicator green."},
   {q:"What is the function of the NUCLEUS in a cell?", o:["Control centre storing DNA","It makes the energy","It makes the food","It stores the water"], w:"The nucleus is the cell's control centre and stores the DNA. Mitochondria release energy; chloroplasts make food."},
   {q:"Which part is found in PLANT cells but NOT animal cells?", o:["Chloroplasts","Nucleus","Cell membrane","Mitochondria"], w:"Chloroplasts (which make food by photosynthesis), a cell wall and a vacuole are found in plant cells but not animal cells."},
-  {q:"Why do muscles like the biceps and triceps work in 'antagonistic pairs'?", o:["Muscles pull but can't push","Both of them are weak","It helps to save energy","They both work at once"], w:"A muscle can only pull (contract), not push, so to bend your arm the bicep contracts while the tricep relaxes, and vice versa."}
+  {q:"Why do muscles like the biceps and triceps work in 'antagonistic pairs'?", o:["Muscles pull but can't push","Both of them are weak","It helps to save energy","They both work at once"], w:"A muscle can only pull (contract), not push, so to bend your arm the bicep contracts while the tricep relaxes, and vice versa."},
+  {q:"With the air hole closed, a Bunsen burner shows a…", o:["Yellow safety flame, when not heating","Blue roaring flame for strong heat","Green flame used for cooling","No flame at all, ever"], w:"With the air hole closed the Bunsen shows a yellow 'safety' flame, used when not heating."},
+  {q:"How do you get a roaring flame on a Bunsen burner?", o:["Open the air hole fully","Close the air hole fully","Remove the gas hose","Tilt the burner over"], w:"Opening the air hole fully gives a roaring blue flame for heating strongly."},
+  {q:"What is a 'control variable'?", o:["A variable kept the same","The variable that you change","The variable that you measure","A result that doesn't fit"], w:"A control variable is kept the same so the test stays fair."},
+  {q:"When should you use a line graph?", o:["When the data is continuous","When the data is in categories","Only when there are two points","Never, always use a bar chart"], w:"Use a line graph for continuous data; use a bar chart for discontinuous (category) data."},
+  {q:"When drawing a line of best fit, you should…", o:["Ignore any anomalies","Join up every single point","Always start it at zero","Draw it through the top point"], w:"A line of best fit is smooth, ignores anomalies and has roughly equal points above and below."},
+  {q:"What is a 'mixture'?", o:["Substances not chemically joined","Just one type of substance","Always a single pure metal","A single, one kind of gas"], w:"In a mixture the substances aren't chemically combined, so they can be separated."},
+  {q:"How are particles arranged in a liquid?", o:["Close together but able to move","Fixed and only able to vibrate","Far apart and moving very fast","Not touching one another at all"], w:"In a liquid, particles are close but slide past each other, so a liquid flows and fits its container."},
+  {q:"What is 'condensation'?", o:["Gas turning into a liquid","Liquid turning into a gas","Solid turning into a liquid","Liquid turning into a solid"], w:"Condensation is gas → liquid and releases energy. Evaporation is liquid → gas."},
+  {q:"What is 'diffusion'?", o:["Particles spreading out and mixing","Particles freezing very solid still","Particles stopping completely","Particles turning into metal"], w:"Diffusion is particles spreading out and mixing, from high to low concentration."},
+  {q:"What does 'soluble' mean?", o:["It will dissolve","It will not dissolve","It will always freeze","It will quickly burn"], w:"Soluble means it will dissolve; insoluble means it won't."},
+  {q:"In a solution, what is the 'solvent'?", o:["The liquid that does the dissolving","The solid that gets fully dissolved","The mixture that then forms","A result that doesn't fit"], w:"The solvent is the liquid that dissolves the solute; together they make a solution."},
+  {q:"What is 'chromatography' used to do?", o:["Separate the substances in a liquid","Separate the sand out of water","Turn a gas straight to solid","Measure the pH of an acid"], w:"Chromatography separates the substances in a liquid, such as the dyes in ink."},
+  {q:"In the litmus test, an acid will…", o:["Turn blue litmus paper red","Turn red litmus paper blue","Leave the litmus unchanged","Turn the litmus paper green"], w:"Acid turns blue litmus paper red; alkali turns red litmus paper blue."},
+  {q:"On universal indicator, a neutral pH 7 shows as…", o:["Green","Red","Purple","Orange"], w:"Universal indicator turns green at pH 7 (neutral); red for acids, purple for alkalis."},
+  {q:"What is the job of the 'cytoplasm' in a cell?", o:["Where chemical reactions happen","The control centre with DNA","Where energy is released","The part that makes food"], w:"The cytoplasm is the jelly-like part of the cell where chemical reactions happen."},
+  {q:"What do 'mitochondria' do in a cell?", o:["Release energy by respiration","Store the cell's own DNA","Make food by photosynthesis","Control what enters the cell"], w:"Mitochondria release energy through respiration."},
+  {q:"What does the 'cell wall' do in a plant cell?", o:["Stops the cell from bursting","Controls what enters the cell","Stores the cell's own DNA","Makes the food for the cell"], w:"The cell wall stops a plant cell bursting and keeps its shape."},
+  {q:"How is a red blood cell adapted to its job?", o:["No nucleus, so more room for oxygen","A long tail so it can swim","Green so it can make food","Cilia to waft mucus along"], w:"A red blood cell has no nucleus (more room for haemoglobin) and a concave shape (large surface area) to carry oxygen."},
+  {q:"What is a 'joint' in the body?", o:["Where two bones meet","A muscle that can pull","A rubbery ear covering","A string joining bone to muscle"], w:"A joint is where two bones meet."},
+  {q:"What is 'cartilage'?", o:["A rubbery covering on bone ends","A string joining muscle to bone","A tissue holding bones together","The place two bones meet"], w:"Cartilage is a rubbery substance covering bone ends to stop them wearing away; it also shapes ears and nose."},
+  {q:"What is the job of a 'ligament'?", o:["Holds bones together at joints","Joins the muscles to the bones","Covers the ends of the bones","Releases energy for movement"], w:"Ligaments are stringy tissues that hold bones together at joints."},
+  {q:"What is the job of a 'tendon'?", o:["Joins muscle to the bone","Holds two bones together","Covers the ends of bones","Stores the cell's DNA"], w:"Tendons connect muscles to bones so that we can move."},
+  {q:"How does a hinge joint move?", o:["Backwards and forwards one way","Freely in all directions","It cannot move at all","Only around in circles"], w:"A hinge joint (knee, elbow) bends back and forth; a ball-and-socket joint (shoulder, hip) moves in all directions."},
+  {q:"What are the four jobs of the skeleton?", o:["Protection, movement, support, blood cells","Only to make you taller","Only to store your food","Only to keep you warm"], w:"The skeleton protects organs, allows movement, supports the body and makes red blood cells in the marrow."},
+  {q:"What unit is force measured in?", o:["The newton (N)","The metre (m)","The litre (l)","The degree (°)"], w:"Force is measured in newtons (N)."},
+  {q:"If an object is stationary, the forces on it are…", o:["Balanced","Unbalanced","Not there at all","Always increasing"], w:"A stationary object has balanced forces; unbalanced forces make an object accelerate."},
+  {q:"How do you calculate speed?", o:["Distance divided by time","Time divided by distance","Distance added to time","Distance times the mass"], w:"Speed = distance ÷ time, usually measured in metres per second (m/s)."},
+  {q:"On a distance-time graph, a flat line means the object is…", o:["Stationary (not moving)","Moving faster and faster","Slowing down gently","Turning around a corner"], w:"A flat line means the object is stationary; a steeper line means it is moving faster."}
  ]},
  {id:"spanish", name:"Spanish", emoji:"🇪🇸", c:"#FF8A65", q:[
   {q:"'¿Cómo te llamas?' is asking…", o:["What is your name?","How are you today?","How old are you?","Where do you live?"], w:"'¿Cómo te llamas?' means 'What's your name?'"},
@@ -643,7 +832,23 @@ const SUBJECTS = [
   {q:"In Spanish, 'porque' means…", o:["Because","But","And","Also"], w:"'Porque' means 'because' — useful for giving a reason. ('Pero' = but, 'y' = and.)"},
   {q:"Why does an adjective change from 'pequeño' to 'pequeña' or 'pequeños'?", o:["They agree with the noun","It is completely random","Just to sound much nicer","Only when asking questions"], w:"Spanish adjectives agree with the noun — masculine/feminine and singular/plural — so the ending changes."},
   {q:"'¿Dónde vives?' means…", o:["Where do you live?","What do you study?","How old are you?","What is your name?"], w:"'¿Dónde vives?' asks where you live."},
-  {q:"'¿Qué estudias?' is asking…", o:["What do you study?","What is your name?","How are you today?","What day is it?"], w:"'¿Qué estudias?' means 'What do you study?' You'd answer 'Estudio…' (I study…)."}
+  {q:"'¿Qué estudias?' is asking…", o:["What do you study?","What is your name?","How are you today?","What day is it?"], w:"'¿Qué estudias?' means 'What do you study?' You'd answer 'Estudio…' (I study…)."},
+  {q:"What does 'por la mañana' mean?", o:["In the morning","In the afternoon","At the weekend","Late at night"], w:"'Por la mañana' means in the morning; 'por la tarde' means in the afternoon."},
+  {q:"Which subject is 'dibujo'?", o:["Art","Music","Drama","History"], w:"'Dibujo' is art. ('Música' = music, 'teatro' = drama.)"},
+  {q:"Which subject is 'educación física'?", o:["PE","English","Science","Maths"], w:"'Educación física' is PE."},
+  {q:"Which subject is 'historia'?", o:["History","Geography","Science","Art"], w:"'Historia' is history; 'geografía' is geography."},
+  {q:"Which subject is 'informática'?", o:["ICT","PE","Drama","Music"], w:"'Informática' is ICT/computing."},
+  {q:"Which subject is 'teatro'?", o:["Drama","Maths","Science","French"], w:"'Teatro' is drama."},
+  {q:"What does 'no estudio' mean?", o:["I don't study","We don't study","I really like","I live in"], w:"'No estudio' means 'I don't study'; 'no estudiamos' is 'we don't study'."},
+  {q:"What is 'un comedor'?", o:["A dining hall","A swimming pool","A large library","A grassy playground"], w:"'Un comedor' is a dining hall."},
+  {q:"What is 'un campo de fútbol'?", o:["A football field","A swimming pool","A science lab","A quiet library"], w:"'Campo de fútbol' is a football field/pitch."},
+  {q:"What is 'una piscina'?", o:["A swimming pool","A dining hall","A playground","A small library"], w:"'Piscina' is a swimming pool."},
+  {q:"What does 'antiguo' mean?", o:["Old","New","Big","Nice"], w:"'Antiguo' means old; 'moderno' means modern."},
+  {q:"What does 'pero' mean?", o:["But","And","Also","Because"], w:"'Pero' means but; 'y' means and; 'también' means also."},
+  {q:"What does '¿Cuándo es tu cumpleaños?' mean?", o:["When is your birthday?","What is your name?","Where do you live?","What do you study?"], w:"'¿Cuándo es tu cumpleaños?' means 'When is your birthday?'"},
+  {q:"What does '¿Cómo es tu uniforme?' mean?", o:["What is your uniform like?","What is your own name?","How old are you now?","Where do you live now?"], w:"'¿Cómo es tu uniforme?' asks what your uniform is like."},
+  {q:"What does 'el jueves' mean?", o:["Thursday","Monday","Sunday","Friday"], w:"'El jueves' is Thursday."},
+  {q:"What does 'el viernes' mean?", o:["Friday","Monday","Sunday","Tuesday"], w:"'El viernes' is Friday."}
  ]}
 ];
 
@@ -775,11 +980,11 @@ function renderHome(){
   buildTrail(done, total);
   buildGrid();
 
-  $("mapHeading").textContent = reviseMode?"Tap subjects to revise":"Your subjects";
-  $("mapHint").textContent = reviseMode?"Mixed round from your picks"
+  $("mapHeading").textContent = reviseMode?"Pick your topics":"Or pick one subject";
+  $("mapHint").textContent = reviseMode?"Tap the topics you want"
                  : (done>=total?"All areas conquered! 🎉":"Tap a subject to play");
   $("startbar").classList.toggle("hidden",!reviseMode);
-  $("reviseBtn").classList.toggle("hidden",reviseMode);
+  $("startbtns").classList.toggle("hidden",reviseMode);
   $("settingsBtn").classList.toggle("hidden",reviseMode);
   $("homeToAdv").classList.toggle("hidden",reviseMode);
   updateStartBtn();
@@ -788,22 +993,13 @@ function renderHome(){
 function buildTrail(done, total){
   const frac = total? done/total : 0;
   const pct = Math.round(frac*100);
-  const at = f => `calc(8px + (100% - 16px) * ${f.toFixed(4)})`;
-  let cum=0, miles="";
-  curAdv.regions.forEach(r=>{
-    cum+=r.ids.length;
-    const rDone=r.ids.every(id=>conquered(curAdv.id,id));
-    miles+=`<div class="mile ${rDone?"lit":""}" style="left:${at(total?cum/total:0)}" title="${r.name}"><span>${r.scenery}</span></div>`;
-  });
-  const finish = done>=total && total>0;
+  const at = f => `calc(4px + (100% - 8px) * ${f.toFixed(4)})`;
+  let segs="";
+  for(let i=0;i<total;i++) segs+=`<div class="seg ${i<done?"on":""}"></div>`;
   $("trail").innerHTML =
-     `<div class="ttrack"></div>`
-   + `<div class="tfill" style="width:calc((100% - 16px) * ${frac.toFixed(4)})"></div>`
-   + miles
-   + `<div class="tstart">🚩</div>`
-   + `<div class="tend ${finish?"lit":""}">🏁</div>`
-   + `<div class="thero" style="left:${at(frac)}">${state.avatar||"🧙"}</div>`
-   + `<div class="tlabel">${done} of ${total} areas conquered · ${pct}%</div>`;
+     `<div class="thero" style="left:${at(frac)}">${state.avatar||"🧙"}</div>`
+   + `<div class="segbar">${segs}</div>`
+   + `<div class="tlabel"><span class="pctbig">${pct}%</span> complete · ${done} of ${total} areas done</div>`;
 }
 
 function buildGrid(){
@@ -868,9 +1064,13 @@ function updateStartBtn(){
   const n=selected.size;
   const b=$("startRevise");
   b.disabled = n===0;
-  b.textContent = n===0?"Start revision":`Start revision (${n} area${n>1?"s":""})`;
+  b.textContent = n===0?"Pick at least one topic":`Start my quiz (${n} topic${n>1?"s":""})`;
 }
-$("reviseBtn").addEventListener("click",()=>{
+$("randomBtn").addEventListener("click",()=>{
+  reviseMode=false;
+  startMixed(curSubjects.map(s=>s.id));
+});
+$("customBtn").addEventListener("click",()=>{
   reviseMode=true; selected=new Set();
   curSubjects.forEach(s=>{ if(!conquered(curAdv.id,s.id)) selected.add(s.id); });
   renderHome();
@@ -883,7 +1083,8 @@ $("homeToAdv").addEventListener("click",()=>{ reviseMode=false; renderAdventures
    QUIZ
    ============================================================ */
 let quiz=null; // {subject, name, color, mode, questions:[{q,opts:[{t,correct}],w}], i, correct, streak}
-const MIX_MAX=20;
+const MIX_MAX=20;   // questions per mixed revision round
+const ROUND_MAX=20; // questions per single-subject round (bank may be larger)
 
 function buildQuestions(pairs){
   // pairs: [{item, subj}] — keep each question's subject so we can label it
@@ -895,7 +1096,7 @@ function buildQuestions(pairs){
 function startQuiz(index){
   const s=curSubjects[index];
   quiz={ mode:"single", advId:curAdv.id, id:s.id, name:s.name, color:s.c,
-    questions:buildQuestions(s.q.map(item=>({item,subj:s}))), i:0, correct:0, streak:0 };
+    questions:buildQuestions(s.q.map(item=>({item,subj:s}))).slice(0,ROUND_MAX), i:0, correct:0, streak:0 };
   reviseMode=false; enterQuiz();
 }
 function startMixed(ids){
