@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14121F">
+<title>Year 7 Quest — Knowledge Quiz</title>
+<style>
+  :root{
+    --bg:#14121F; --bg2:#1B1930; --surface:#221F36; --surface-hi:#2C2946;
+    --line:rgba(255,255,255,.08); --line-hi:rgba(255,255,255,.16);
+    --text:#F4F3FA; --muted:#A29FBC; --gold:#FFC24B; --gold-soft:#7a5f1e;
+    --ok:#46D6A0; --ok-bg:rgba(70,214,160,.14); --no:#FF6B7A; --no-bg:rgba(255,107,122,.14);
+    --r:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%,rgba(255,194,75,.10),transparent 60%),
+      radial-gradient(900px 500px at -10% 10%,rgba(120,110,255,.14),transparent 55%),
+      var(--bg);
+    color:var(--text); line-height:1.5;
+    min-height:100dvh;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+  h1,h2,h3{margin:0;letter-spacing:-.02em;font-weight:800;line-height:1.1}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .hidden{display:none!important}
+
+  /* ---------- Welcome ---------- */
+  .hero{text-align:center;padding:44px 8px 8px}
+  .badge-lg{font-size:64px;line-height:1;filter:drop-shadow(0 8px 24px rgba(255,194,75,.35))}
+  .kicker{color:var(--gold);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12px;margin:22px 0 8px}
+  .hero h1{font-size:clamp(30px,8vw,44px)}
+  .hero p{color:var(--muted);margin:14px auto 0;max-width:34ch}
+  .namebox{margin:30px 0 10px}
+  .namebox label{display:block;color:var(--muted);font-size:13px;font-weight:700;margin:0 4px 8px;text-transform:uppercase;letter-spacing:.08em}
+  input[type=text]{
+    width:100%;padding:16px 18px;border-radius:14px;background:var(--surface);
+    border:1.5px solid var(--line-hi);color:var(--text);font-size:18px;font-weight:600;outline:none
+  }
+  input[type=text]:focus{border-color:var(--gold)}
+
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+    padding:17px 20px;border-radius:14px;font-size:17px;font-weight:800;
+    background:linear-gradient(180deg,#FFCF66,#F5AE2E);color:#2a1c00;
+    box-shadow:0 8px 22px rgba(245,174,46,.28);transition:transform .08s ease,filter .15s
+  }
+  .btn:active{transform:translateY(1px) scale(.995)}
+  .btn.secondary{background:var(--surface-hi);color:var(--text);box-shadow:none;border:1.5px solid var(--line-hi)}
+  .btn.ghost{background:transparent;color:var(--muted);box-shadow:none;font-weight:700;font-size:15px;padding:12px}
+  .btn:disabled{filter:grayscale(.6) brightness(.7);cursor:not-allowed}
+
+  /* ---------- Home header ---------- */
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .hi{font-size:clamp(24px,6.5vw,32px)}
+  .hi small{display:block;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+  .lvl{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:120px}
+  .lvl .num{background:var(--surface-hi);border:1.5px solid var(--line-hi);padding:6px 12px;border-radius:999px;font-weight:800;font-size:13px}
+  .lvl .num b{color:var(--gold)}
+  .xpbar{width:120px;height:8px;border-radius:999px;background:var(--surface);overflow:hidden;border:1px solid var(--line)}
+  .xpbar>i{display:block;height:100%;background:linear-gradient(90deg,#FFCF66,#F5AE2E);width:0;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .stats{display:flex;gap:10px;margin:18px 0 22px}
+  .stat{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 12px 11px;text-align:center}
+  .stat b{display:block;font-size:22px;font-weight:800}
+  .stat span{color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+
+  .sectlabel{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 12px}
+  .sectlabel h3{font-size:15px;letter-spacing:.02em}
+  .sectlabel .hint{color:var(--muted);font-size:12.5px}
+
+  /* avatar picker */
+  .avatars{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 4px;-webkit-overflow-scrolling:touch}
+  .av{flex:none;width:54px;height:54px;border-radius:14px;background:var(--surface);border:2px solid var(--line-hi);font-size:27px;display:flex;align-items:center;justify-content:center}
+  .av.sel{border-color:var(--gold);background:var(--surface-hi);box-shadow:0 0 0 3px rgba(255,194,75,.20)}
+
+  /* journey map */
+  .maphd{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 6px}
+  .maphd h3{font-size:15px;letter-spacing:.02em}
+  .maphd .hint{color:var(--muted);font-size:12.5px}
+  .journey{position:relative;margin:2px 0 6px}
+  .map{position:relative;width:100%}
+  .map svg{display:block;width:100%;height:auto;overflow:visible}
+  .track{fill:none;stroke:var(--surface-hi);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .trail{fill:none;stroke:var(--gold);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(255,194,75,.7))}
+  .nodes{position:absolute;inset:0}
+  .node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:5px;width:96px;background:none;border:none;padding:0}
+  .node .dot{position:relative;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--surface);border:3px solid var(--line-hi);box-shadow:0 6px 14px rgba(0,0,0,.35);transition:transform .1s}
+  .node:active .dot{transform:scale(.9)}
+  .node .flag{position:absolute;top:-3px;right:14px;width:23px;height:23px;border-radius:50%;background:var(--ok);color:#04231a;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);z-index:2}
+  .node .selmark{position:absolute;top:-3px;right:14px;width:23px;height:23px;border-radius:7px;background:var(--gold);color:#2a1c00;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);z-index:2}
+  .node .nlabel{font-size:12px;font-weight:800;color:var(--text);text-align:center;line-height:1.12;max-width:96px;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+  .node .pct{font-size:10px;font-weight:700;color:var(--muted)}
+  .node.sel .dot{border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,194,75,.25)}
+  .hero-base{position:absolute;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;pointer-events:none;box-shadow:0 0 0 3px var(--gold),0 0 20px rgba(255,194,75,.55);z-index:1}
+  .hero-marker{position:absolute;transform:translate(-50%,-120%);font-size:34px;pointer-events:none;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5));z-index:4;animation:bob 1.9s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translate(-50%,-120%)}50%{transform:translate(-50%,-134%)}}
+
+  /* adventure select */
+  .advlist{display:flex;flex-direction:column;gap:12px;margin:16px 0 12px}
+  .advcard{position:relative;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:15px 15px;display:flex;align-items:center;gap:13px;overflow:hidden;transition:transform .08s}
+  .advcard:active{transform:scale(.99)}
+  .advcard .ic{font-size:28px;flex:none;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--surface-hi);border:1px solid var(--line-hi)}
+  .advcard .info{flex:1;min-width:0}
+  .advcard .t{display:block;font-weight:800;font-size:17px}
+  .advcard .p{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-top:1px}
+  .advcard .mini{display:block;height:7px;border-radius:99px;background:var(--bg2);overflow:hidden;margin-top:9px;border:1px solid var(--line)}
+  .advcard .mini>i{display:block;height:100%;background:linear-gradient(90deg,#FFCF66,#F5AE2E);width:0}
+  .advcard .done-pill{display:block;font-size:12px;color:var(--gold);font-weight:800;margin-top:6px}
+  .advcard .go{font-size:26px;color:var(--muted);flex:none}
+  .advcard.soon{opacity:.6}
+  .advbadge{position:absolute;top:12px;right:12px;background:var(--surface-hi);border:1px solid var(--line-hi);color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:999px}
+
+  /* back chip */
+  .backchip{background:var(--surface);border:1.5px solid var(--line);color:var(--muted);font-weight:700;font-size:13px;padding:9px 14px;border-radius:999px;margin-bottom:14px}
+  .backchip:active{transform:scale(.97)}
+
+  /* region bands + banners on the map */
+  .regions{position:absolute;inset:0;z-index:0}
+  .band{position:absolute;left:2%;right:2%}
+  .map svg{position:relative;z-index:1}
+  .nodes{z-index:2}
+  .rbanner{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:var(--bg2);border:1.5px solid var(--line-hi);border-radius:999px;padding:6px 13px;font-weight:800;font-size:12.5px;white-space:nowrap;z-index:3;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+  .rbanner .rsc{font-size:15px}
+  .rbanner .rp{color:var(--muted);font-weight:700;font-size:11px}
+
+  /* celebration */
+  .cele{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:rgba(8,7,14,.74);padding:24px}
+  .cele canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .celecard{position:relative;z-index:1;text-align:center;background:var(--bg2);border:1.5px solid var(--line-hi);border-radius:22px;padding:28px 22px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+  .celecard .celeEmoji{font-size:66px;line-height:1;animation:pop .55s cubic-bezier(.2,1.4,.4,1)}
+  .celecard h2{font-size:26px;margin:12px 0 6px}
+  .celecard p{color:var(--muted);margin:0 0 20px}
+  @keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+  /* horizontal progress trail */
+  .trailwrap{position:relative;height:76px;margin:16px 2px 4px}
+  .ttrack{position:absolute;left:8px;right:8px;top:36px;height:8px;border-radius:99px;background:var(--surface);border:1px solid var(--line)}
+  .tfill{position:absolute;left:8px;top:36px;height:8px;border-radius:99px;background:linear-gradient(90deg,#FFCF66,#F5AE2E);box-shadow:0 0 10px rgba(255,194,75,.5)}
+  .mile{position:absolute;top:40px;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:var(--surface);border:2px solid var(--line-hi);display:flex;align-items:center;justify-content:center;font-size:13px;opacity:.55}
+  .mile.lit{opacity:1;border-color:var(--gold);box-shadow:0 0 8px rgba(255,194,75,.55)}
+  .tstart,.tend{position:absolute;top:40px;transform:translate(-50%,-50%);font-size:18px}
+  .tstart{left:8px}
+  .tend{right:0;transform:translate(50%,-50%);filter:grayscale(1);opacity:.55}
+  .tend.lit{filter:none;opacity:1}
+  .thero{position:absolute;top:6px;transform:translate(-50%,0);font-size:30px;filter:drop-shadow(0 5px 6px rgba(0,0,0,.5));transition:left .6s cubic-bezier(.2,.8,.2,1);animation:bob2 1.9s ease-in-out infinite}
+  @keyframes bob2{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-4px)}}
+  .tlabel{position:absolute;left:0;right:0;bottom:-2px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+
+  /* region headers above tile groups */
+  .rhead{display:flex;align-items:center;gap:8px;margin:18px 2px 10px;padding:9px 13px;background:var(--bg2);border:1.5px solid var(--line-hi);border-left-width:4px;border-radius:12px;font-weight:800;font-size:14px}
+  .rhead .rsc{font-size:17px}
+  .rhead .rname{flex:1}
+  .rhead .rp{color:var(--muted);font-weight:800;font-size:12.5px}
+
+  /* revise controls */
+  .revrow{display:flex;gap:10px;margin-bottom:18px}
+  .revrow .btn{padding:14px}
+  .startbar{position:sticky;bottom:12px;z-index:5;margin-top:16px}
+
+  /* ---------- Subject grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .tile{
+    position:relative;text-align:left;background:var(--surface);border:1.5px solid var(--line);
+    border-radius:var(--r);padding:15px 14px 14px;overflow:hidden;transition:transform .08s ease,border-color .15s;
+    min-height:112px;display:flex;flex-direction:column;justify-content:space-between
+  }
+  .tile:active{transform:scale(.98)}
+  .tile{cursor:pointer}
+  .check{cursor:pointer}
+  .tile::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+  .tile .emoji{font-size:30px;line-height:1}
+  .tile .nm{font-weight:800;font-size:16.5px;margin-top:8px;letter-spacing:-.01em}
+  .tile .meta{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12.5px;color:var(--muted);font-weight:600}
+  .stars{letter-spacing:1px;font-size:13px}
+  .stars .on{color:var(--gold)} .stars .off{color:var(--line-hi)}
+  .tile .best{color:var(--c);font-weight:800}
+  .tile.selectable{cursor:pointer}
+  .tile.selected{border-color:var(--gold);background:var(--surface-hi)}
+  .check{
+    position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;
+    background:var(--bg2);border:1.5px solid var(--line-hi);color:var(--muted)
+  }
+  .check.on{background:var(--ok);border-color:var(--ok);color:#04231a}
+  .tile.mastered{opacity:.62}
+  .tile.mastered .nm::after{content:" ✓";color:var(--ok)}
+  .ribbon{position:absolute;top:9px;right:9px;background:var(--ok-bg);color:var(--ok);font-size:10px;font-weight:900;letter-spacing:.06em;padding:4px 8px;border-radius:999px;text-transform:uppercase}
+  .selbox{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:8px;border:2px solid var(--line-hi);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-weight:900;color:transparent}
+  .tile.selected .selbox{background:var(--gold);border-color:var(--gold);color:#2a1c00}
+
+  /* ---------- Quiz ---------- */
+  .qtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .iconbtn{width:42px;height:42px;border-radius:12px;background:var(--surface);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+  .qtitle{flex:1;min-width:0}
+  .qtitle b{display:block;font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qtitle span{color:var(--muted);font-size:12.5px;font-weight:600}
+  .streak{display:flex;align-items:center;gap:4px;background:var(--surface);border:1.5px solid var(--line);padding:8px 12px;border-radius:999px;font-weight:800;font-size:14px;flex:none}
+  .streak.hot{border-color:var(--gold);color:var(--gold)}
+  .pbar{height:9px;border-radius:999px;background:var(--surface);overflow:hidden;border:1px solid var(--line);margin-bottom:22px}
+  .pbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--c,#FFCF66),var(--c,#F5AE2E));width:0;transition:width .35s ease}
+  .qcard .qnum{color:var(--c);font-weight:800;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+  .qcard h2{font-size:clamp(20px,5.2vw,25px);letter-spacing:-.02em;line-height:1.25}
+  .opts{display:flex;flex-direction:column;gap:11px;margin-top:22px}
+  .opt{
+    display:flex;align-items:center;gap:13px;text-align:left;width:100%;padding:15px 15px;
+    border-radius:14px;background:var(--surface);border:1.5px solid var(--line-hi);
+    font-size:16px;font-weight:600;transition:transform .06s,border-color .12s,background .12s
+  }
+  .opt:active{transform:scale(.99)}
+  .opt .key{width:28px;height:28px;flex:none;border-radius:8px;background:var(--surface-hi);border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--muted)}
+  .opt.correct{background:var(--ok-bg);border-color:var(--ok)}
+  .opt.correct .key{background:var(--ok);border-color:var(--ok);color:#04231a}
+  .opt.wrong{background:var(--no-bg);border-color:var(--no)}
+  .opt.wrong .key{background:var(--no);border-color:var(--no);color:#2a0409}
+  .opt.dim{opacity:.5}
+  .opt[disabled]{cursor:default}
+  .explain{margin-top:18px;border-radius:14px;padding:15px 16px;border:1.5px solid var(--line);background:var(--bg2);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+  .explain.show{opacity:1;transform:none}
+  .explain .tag{font-weight:900;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+  .explain.good .tag{color:var(--ok)} .explain.bad .tag{color:var(--no)}
+  .explain p{margin:0;color:#E7E6F2;font-size:15px}
+  .nextwrap{margin-top:18px}
+
+  /* ---------- Results ---------- */
+  .res{text-align:center;padding:24px 6px 8px}
+  .res .em{font-size:66px;line-height:1;filter:drop-shadow(0 10px 26px rgba(255,194,75,.35))}
+  .res h1{font-size:clamp(28px,7vw,40px);margin-top:14px}
+  .res .sub{color:var(--muted);margin-top:8px}
+  .scorebig{font-size:60px;font-weight:800;letter-spacing:-.03em;margin:18px 0 2px}
+  .scorebig .of{color:var(--muted);font-size:26px;font-weight:700}
+  .rstars{font-size:34px;letter-spacing:6px;margin:6px 0 4px}
+  .rstars .on{color:var(--gold)} .rstars .off{color:var(--line-hi)}
+  .pill{display:inline-flex;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 18px;margin-top:12px}
+  .pill div{text-align:center}
+  .pill b{display:block;font-size:20px;font-weight:800}
+  .pill span{color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .res .actions{margin-top:26px;display:flex;flex-direction:column;gap:11px}
+
+  .modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(8,7,14,.62)}
+  .modal .sheet{width:100%;max-width:640px;background:var(--bg2);border:1.5px solid var(--line-hi);border-bottom:none;border-radius:22px 22px 0 0;padding:22px 18px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+  .modal h3{font-size:21px}
+  .modal label{display:block;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:2px 4px 8px}
+  .modal .btn{margin-top:2px}
+  #resetBtn.armed{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+  footer{color:var(--muted);text-align:center;font-size:12px;margin-top:30px;opacity:.7}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <noscript>
+    <div style="max-width:520px;margin:60px auto;padding:24px;border-radius:16px;background:#221F36;border:1.5px solid rgba(255,255,255,.16);text-align:center">
+      <div style="font-size:52px">📵</div>
+      <h1 style="font-size:24px;margin:14px 0 8px">JavaScript is switched off</h1>
+      <p style="color:#A29FBC">This quiz needs JavaScript to run. Please open this file in a normal web browser (Safari or Chrome) with JavaScript enabled.</p>
+    </div>
+  </noscript>
+
+  <!-- WELCOME -->
+  <section id="welcome">
+    <div class="hero">
+      <div class="badge-lg">🧠</div>
+      <div class="kicker">Year 7 Quest</div>
+      <h1>Level up your<br>knowledge</h1>
+      <p>Quiz yourself on everything in your Knowledge Organiser — and find out the <em>why</em> behind every answer.</p>
+    </div>
+    <div class="namebox">
+      <label for="nameInput">What should I call you?</label>
+      <input id="nameInput" type="text" placeholder="Type your name" autocomplete="off" maxlength="18">
+    </div>
+    <div class="namebox">
+      <label>Choose your character</label>
+      <div class="avatars" id="avatarPick"></div>
+    </div>
+    <button class="btn" id="startJourney">Start my quest →</button>
+    <footer>Your progress saves on this device. No internet needed.</footer>
+  </section>
+
+  <!-- ADVENTURES -->
+  <section id="adventures" class="hidden">
+    <div class="top">
+      <h2 class="hi"><small>Choose your adventure</small><span id="advGreet">Hi</span></h2>
+      <div class="lvl">
+        <div class="num">Level <b id="advLevel">1</b></div>
+        <div class="xpbar"><i id="advXp"></i></div>
+      </div>
+    </div>
+    <div class="advlist" id="advList"></div>
+    <button class="btn ghost" id="advSettings" style="margin-top:6px">⚙︎ Name, character or reset</button>
+    <footer>Pick a Knowledge Organiser to explore · works offline</footer>
+  </section>
+
+  <!-- HOME -->
+  <section id="home" class="hidden">
+    <button class="backchip" id="homeToAdv">← Adventures</button>
+    <div class="top">
+      <h2 class="hi"><small id="homeKicker">Knowledge Quest</small><span id="greet">Hi there</span></h2>
+      <div class="lvl">
+        <div class="num">Level <b id="levelNum">1</b></div>
+        <div class="xpbar"><i id="xpFill"></i></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b id="statMastered">0/14</b><span>Areas done</span></div>
+      <div class="stat"><b id="statXp">0</b><span>Total XP</span></div>
+      <div class="stat"><b id="statStreak">0</b><span>Best streak</span></div>
+    </div>
+
+    <div class="revrow">
+      <button class="btn secondary" id="reviseBtn">🎯 Choose subjects to revise</button>
+    </div>
+
+    <div class="trailwrap" id="trail"></div>
+
+    <div class="maphd">
+      <h3 id="mapHeading">Your learning journey</h3>
+      <span class="hint" id="mapHint">Tap a subject to play</span>
+    </div>
+
+    <div id="grid"></div>
+
+    <div class="startbar hidden" id="startbar">
+      <button class="btn" id="startRevise" disabled>Start revision</button>
+      <button class="btn ghost" id="cancelRevise">Cancel</button>
+    </div>
+
+    <button class="btn ghost" id="settingsBtn" style="margin-top:22px">⚙︎ Change name or reset progress</button>
+    <footer>Built from your Year 7 Knowledge Organiser · works offline</footer>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="qtop">
+      <button class="iconbtn" id="quizBack" aria-label="Back">←</button>
+      <div class="qtitle"><b id="quizSubject">Subject</b><span id="quizProg">Question 1 of 10</span></div>
+      <div class="streak" id="streakChip"><span>🔥</span><span id="streakVal">0</span></div>
+    </div>
+    <div class="pbar"><i id="quizFill"></i></div>
+    <div class="qcard">
+      <div class="qnum" id="qNum">Question 1</div>
+      <h2 id="qText">…</h2>
+      <div class="opts" id="opts"></div>
+      <div class="explain" id="explain"><div class="tag" id="explainTag">Why</div><p id="explainText"></p></div>
+      <div class="nextwrap hidden" id="nextWrap"><button class="btn" id="nextBtn">Next →</button></div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden">
+    <div class="res">
+      <div class="em" id="resEmoji">🎉</div>
+      <h1 id="resTitle">Nice work!</h1>
+      <div class="sub" id="resSub"></div>
+      <div class="scorebig"><span id="resScore">0</span><span class="of"> / <span id="resTotal">0</span></span></div>
+      <div class="rstars" id="resStars"></div>
+      <div class="pill">
+        <div><b id="resPct">0%</b><span>Score</span></div>
+        <div><b id="resXp">+0</b><span>XP earned</span></div>
+        <div><b id="resBest">—</b><span>Your best</span></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="againBtn">Try again</button>
+        <button class="btn secondary" id="masterBtn">Mark subject as mastered ✓</button>
+        <button class="btn ghost" id="homeBtn">← Back to subjects</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CELEBRATION -->
+  <div id="celebrate" class="cele hidden">
+    <canvas id="confetti"></canvas>
+    <div class="celecard">
+      <div class="celeEmoji" id="celeEmoji">🎉</div>
+      <h2 id="celeTitle">Area conquered!</h2>
+      <p id="celeSub"></p>
+      <button class="btn" id="celeNext">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="modal" class="modal hidden">
+    <div class="sheet">
+      <h3>Settings</h3>
+      <div>
+        <label for="editName">Your name</label>
+        <input id="editName" type="text" maxlength="18" placeholder="Type your name">
+      </div>
+      <div>
+        <label>Your character</label>
+        <div class="avatars" id="avatarPick2"></div>
+      </div>
+      <button class="btn" id="saveName">Save name</button>
+      <button class="btn secondary" id="resetBtn">Reset all progress</button>
+      <button class="btn ghost" id="closeModal">Close</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   DATA — every question is grounded in the Year 7 Knowledge
+   Organiser. In each question the CORRECT option is listed
+   first (index 0); options are shuffled at runtime.
+   q = question, o = options (o[0] correct), w = why/explanation
+   ============================================================ */
+const SUBJECTS = [
+ {id:"art", name:"Art", emoji:"🎨", c:"#FF7AB6", q:[
+  {q:"What are the three primary colours?", o:["Red, yellow and blue","Green, orange and purple","Red, green and blue","Black, white and grey"], w:"Primary colours are the starting colours — you can't make them by mixing others, but you can mix them to make all the rest."},
+  {q:"How is a secondary colour like green or orange made?", o:["Mixing two primary colours together","Adding white to a bright primary","Mixing any colour with black","Adding water to a dark primary"], w:"Secondary colours are made by mixing two primaries together — for example blue + yellow = green."},
+  {q:"What is a tertiary colour?", o:["A primary mixed with a secondary","Two secondary colours mixed together","Any very dark shade of grey","A colour left off the wheel"], w:"A tertiary colour is made by mixing a primary with the secondary colour next to it on the colour wheel."},
+  {q:"Why are black and white NOT on the colour wheel?", o:["They change tone, not the colour","They are simply too hard to make","They are really just secondary colours","They both count as primary colours"], w:"Black and white aren't true hues — they're used to make colours lighter or darker, which is about tone, not colour."},
+  {q:"A 'stylized' drawing is best described as…", o:["A cartoon-like, deliberately non-realistic style","A drawing that looks completely real","A quick black-and-white pencil sketch","A picture made only using pen"], w:"Stylized art is deliberately non-realistic and cartoon-like — the opposite of realistic art."},
+  {q:"What does 'realistic' artwork mean?", o:["The artwork looks just like reality","The artwork is a simple cartoon","The artwork uses only flat shapes","The artwork is completely abstract art"], w:"Realistic artwork is made to look like the real thing."},
+  {q:"What is a collage?", o:["Paper and photos stuck onto card","A drawing made with one line","A painting using only clean water","A small handheld type of camera"], w:"A collage is built by cutting out shapes or paper and sticking them down — the artist Pete Cromer works this way."},
+  {q:"To make a watercolour paint LIGHTER, what do you do?", o:["Add more water to the brush","Add much more paint on top","Add some black to the mix","Add thick white paint instead"], w:"Watercolour is transparent, so more water lets the white paper show through, making the colour lighter. Less water = more vivid."},
+  {q:"In mark making, how do you make an area look DARKER?", o:["Draw the lines closer together","Spread the lines much further apart","Use far fewer lines overall","Rub it out and start again"], w:"The closer and more numerous the marks, the darker an area looks; spread-out lines look lighter."},
+  {q:"The wildlife artist Abby Diamond is known for using…", o:["Watercolour and fine liner pen","Collage made from cut paper","Only a soft graphite pencil","Oil paints on a canvas"], w:"Abby Diamond uses watercolour and fine liner pen, with bright colour but realistic animal drawings."},
+  {q:"How does the artist Pete Cromer create his animal artwork?", o:["Collage of cut, reassembled shapes","Realistic pencil shading and blending","Close-up photographs of live wildlife","Loose watercolour washes and splatters"], w:"Pete Cromer is a stylized artist who cuts out shapes and reassembles them (collage) to create animals."},
+  {q:"To make a watercolour colour DARKER and more vivid, you should…", o:["Use less water, more paint","Use a lot more water","Add plenty of white paint","Use fresh, clean white paper"], w:"Less water and more paint makes watercolour more vivid and darker."},
+  {q:"Which of these is one of the visual elements artists study?", o:["Texture","Tempo","Dynamics","Chord"], w:"The visual elements include line, tone, texture, shape, pattern and colour. Tempo, dynamics and chord are music terms."},
+  {q:"In art, 'tone' refers to…", o:["How light or dark something is","How rough a surface feels","The main colour being used","The overall size of the drawing"], w:"Tone is about lightness and darkness — building up tone (light, medium, dark) makes drawings look 3D and realistic."}
+ ]},
+ {id:"computing", name:"Computing", emoji:"💻", c:"#4FC3F7", q:[
+  {q:"The SMART rules in e-safety are there to help you…", o:["Stay safe online","Type much faster","Save phone battery","Draw pictures better"], w:"SMART = Stay safe, Don't meet up, Accepting files, Reliable?, Tell someone — a way to remember how to stay safe online."},
+  {q:"The 'S' in the SMART rules stands for 'Stay Safe'. What does it mean?", o:["Keep personal information private","Save all your work often","Stay off all social media","Switch devices off at night"], w:"Stay Safe means keeping personal information private from people and places you don't know online."},
+  {q:"What makes a strong password?", o:["Long, with mixed characters","Your name and birthday","Simply the word password","Just four easy numbers"], w:"A strong password is long (over 12 characters) and mixes cases, numbers and symbols — and you never share it."},
+  {q:"Why is it important to keep your password to yourself?", o:["So nobody can impersonate you","So you never forget it","So pages load much faster","So teachers can check it"], w:"If someone knows your password they can access your accounts and impersonate you — that's why passwords stay private."},
+  {q:"What is cyberbullying?", o:["Using technology to bully someone","A kind of computer virus","A very strong password","Sharing your schoolwork online"], w:"Cyberbullying is using technology to bully — it includes trolling, flaming, gossiping and impersonation."},
+  {q:"What does 'masquerading' online mean?", o:["Pretending to be someone else","Posting cruel, offensive messages","Sending far too many files","Turning off your own webcam"], w:"Masquerading is pretending to be someone you are not, for example using a fake account. Posting offensive messages is 'flaming'."},
+  {q:"Why is it important to check that information you find online is accurate?", o:["Anyone can post wrong information","Because it loads much faster","Because it saves mobile data","Because it is the law"], w:"Anyone can put information online, so check it's confirmed by other sources, unbiased, trusted and up to date before believing it."},
+  {q:"If a website only gives one side of a story, this is called…", o:["Bias","Flaming","Browsing","Iteration"], w:"Bias means only showing one side — which is why you should check information against other sources."},
+  {q:"Who created the first website?", o:["Sir Tim Berners-Lee","Microsoft's Bill Gates","Apple's Steve Jobs","The coder Alan Turing"], w:"Sir Tim Berners-Lee created the first website and invented the World Wide Web."},
+  {q:"A keyboard is an example of which type of device?", o:["An input device","An output device","A storage device","A network device"], w:"Input devices (keyboard, mouse) put data into the computer; output devices (screen, speakers) let you see or hear what it's doing."},
+  {q:"If a computer's parts were like the human body, the processor would be the…", o:["The brain","The skeleton","The heart","The skin"], w:"In the body analogy the processor is the brain, the PC casing is the skeleton, and the motherboard is the central nervous system."},
+  {q:"Binary uses only which two digits?", o:["0 and 1","1 and 2","0 and 9","A and B"], w:"Binary is base-2, using only 0 and 1 — that's how computers process all data."},
+  {q:"Hexadecimal (hex) is a number system that uses…", o:["Base 16, using digits and letters","Only the digits zero and one","Base 10, our everyday numbers","Base 2, the computer's own system"], w:"Hex is base 16 — 0–9 then A–F. Each hex digit stands for a 4-bit binary sequence, making long binary easier to read."},
+  {q:"In Scratch, a loop repeats instructions. What is another name for a loop?", o:["Iteration","Selection","Duplication","Declaration"], w:"A loop repeats instructions and is also called iteration. Selection is the IF-statement idea."},
+  {q:"In Scratch, what is a 'variable' used for?", o:["Storing data like scores","Repeating a set of instructions","Drawing the game background","Making the sprite grow bigger"], w:"A variable stores data (like a score) that can change while the program runs. An IF statement chooses what to do — that's selection."},
+  {q:"In Scratch, what is a 'sprite'?", o:["A character or object","The project's background image","A repeating loop of code","A saved account password"], w:"A sprite is a character or object in your game; changing its 'costume' makes it look like it's moving."}
+ ]},
+ {id:"dt", name:"Design & Tech", emoji:"🔧", c:"#FFB74D", q:[
+  {q:"What is an algorithm?", o:["Step-by-step instructions to solve something","A solid physical computer part","A very common type of metal","A particular kind of drawing style"], w:"An algorithm is a set of step-by-step instructions that solve a problem — a key idea in computational thinking."},
+  {q:"'Decomposition' in computational thinking means…", o:["Breaking a problem into parts","Food slowly rotting away","Permanently deleting some files","Adding tone to a drawing"], w:"Decomposition breaks a complex problem into smaller parts that are easier to understand and solve."},
+  {q:"What does 'abstraction' mean?", o:["Ignoring details you don't need","Making a piece of art abstract","Breaking a big problem up","Testing whether a solution works"], w:"Abstraction filters out the details you don't need, so you can concentrate on the ones that matter."},
+  {q:"Which of these is 'hardware'?", o:["The physical parts of a computer","The instructions that make it run","A written step-by-step algorithm","A secret personal login password"], w:"Hardware is the physical components; software is the instructions (programs) that tell the computer what to do."},
+  {q:"When shading a 3D drawing, which face should be DARKEST?", o:["The face getting the least light","The face getting the most light","Always the very top face","They should all look equal"], w:"The face getting most light is lightest and the one getting least light is darkest — that contrast makes it look 3D."},
+  {q:"What does the Eatwell Guide show you?", o:["Proportions for a balanced diet","How to cook raw meat","Which foods are the cheapest","How to lose weight fast"], w:"The Eatwell Guide shows the food groups and how much of each (the proportions) you need for a healthy, balanced diet."},
+  {q:"Why can a poor diet be harmful?", o:["It causes disease and illness","It just makes food bland","It uses up more electricity","It has no real effect"], w:"A poor diet can lead to diseases and weaken the body's ability to fight off infections."},
+  {q:"Bacteria grow fastest in the 'danger zone', which is…", o:["Between 5°C and 63°C","Anywhere below freezing point","Anywhere above boiling point","At exactly zero degrees"], w:"Bacteria grow rapidly between 5°C and 63°C (fastest near body temperature, 37°C), so food should spend as little time there as possible."},
+  {q:"Non-ferrous metals contain no iron. Why does this suit them to electrical wiring?", o:["Not magnetic, won't rust","Strongly magnetic and heavy","Always the cheapest to buy","Much stronger than steel"], w:"With no iron, non-ferrous metals aren't magnetic and don't rust — ideal for electronics and wiring. Aluminium is the most used."},
+  {q:"What is the original source of metals?", o:["Ore dug from the ground","Tall trees in thick forests","Melted-down recycled plastic","Salt water from deep seas"], w:"Metals originally come from ore, which is rock mined from the ground."},
+  {q:"Why is a prototype often made before the final product?", o:["To test and improve it","To sell it to customers","To use up spare materials","Because the law requires it"], w:"A prototype lets you test and improve a design, and catch problems, before spending time and materials on the real thing."},
+  {q:"What does CAD stand for in Design & Technology?", o:["Computer Aided Design","Cutting And Drilling","Careful Accurate Drawing","Colour And Detail"], w:"CAD is Computer Aided Design — using a computer to design products accurately."},
+  {q:"Cyanoacrylate is commonly known as…", o:["Superglue","Solder","Sandpaper","Hacksaw"], w:"Cyanoacrylate is the technical name for superglue."},
+  {q:"Why should fabric scissors only ever be used to cut fabric?", o:["Cutting other things blunts them","They are strongly magnetic inside","They cost a lot to replace","So they always stay shiny"], w:"Cutting paper or card blunts fabric scissors, so afterwards they won't cut fabric neatly."},
+  {q:"In the textiles room, what is a 'hazard'?", o:["Something that could cause harm","A decorative type of stitch","A sewing-machine speed setting","A particular colour of thread"], w:"A hazard is anything that could cause harm — spotting hazards like pins and needles keeps you safe."}
+ ]},
+ {id:"drama", name:"Drama", emoji:"🎭", c:"#BA68C8", q:[
+  {q:"Stage positions (like 'stage left') are always given from whose point of view?", o:["The actor facing the audience","The audience in their seats","The director at the back","The lighting operator's booth"], w:"Stage directions are always from the actor's point of view when standing on stage looking out at the audience."},
+  {q:"In drama, what is the 'script'?", o:["The text of the play","The plan for the lighting","The design of the stage set","The people in the audience"], w:"The script is the written text of the play."},
+  {q:"What is the role of a narrator?", o:["Tells the audience what's happening","Designs and builds the set","Sells tickets at the door","Always plays the main villain"], w:"A narrator tells the audience what is happening during the performance, helping them follow the story."},
+  {q:"In drama, 'setting' means…", o:["The time and place","The list of characters","The written stage instructions","The interval between acts"], w:"The setting is the time and place in which the play happens."},
+  {q:"What are 'stage directions'?", o:["Instructions telling the actor what to do","The names of all characters","The main tune of the play","The seats used by the audience"], w:"Stage directions are written instructions in the script telling the actor what to do."},
+  {q:"Acts and scenes in a play are like…", o:["The chapters of the play","The actors on the stage","The props used in scenes","The music played throughout"], w:"Acts and scenes are the 'chapters' that divide up a play."},
+  {q:"The 'cast of characters' means…", o:["All the characters in it","The crew behind the stage","The people watching the play","The furniture placed on stage"], w:"The cast of characters is all the characters in the play, usually portrayed by actors."},
+  {q:"An actor uses 'projection' to…", o:["Make the voice carry clearly","Move around the stage quietly","Change the coloured stage lighting","Memorise all of their lines"], w:"Projection is throwing your voice so everyone can hear you clearly — one of the vocal tools in the actor's toolbox."},
+  {q:"Why is 'audience awareness' important for a performer?", o:["So they can see and hear","So the actor can turn away","So the play finishes sooner","So the audience won't clap"], w:"Audience awareness means always performing so the audience can see and hear you — not turning your back or mumbling."},
+  {q:"In drama, 'proxemics' is about…", o:["Use of space between actors","The speed of the speaking","The actor's facial expressions","The volume of their voice"], w:"Proxemics is how actors use space and the distance between them to show relationships and feelings."},
+  {q:"A 'still image' (freeze frame) in drama is…", o:["A frozen, silent pose","A fast energetic dance","A sudden loud shout","A quick costume change"], w:"A still image is a frozen, silent pose — like pressing pause — used to capture a moment or feeling."},
+  {q:"'Mime' is performing using…", o:["Movement and expression, no words","Speaking in a loud voice","Performing with only music","Reading a script out loud"], w:"Mime tells a story using movement, gesture and facial expression, without any words."},
+  {q:"Which of these is a tool an actor uses with their VOICE?", o:["Pitch","Gesture","Posture","Stance"], w:"Pitch (how high or low the voice is) is a vocal tool. Gesture, posture and eye contact are physical (body) tools."},
+  {q:"How can an actor use posture and body language to create a character?", o:["Change how they stand and move","Speak a little bit faster","Memorise many more lines","Stand completely still throughout"], w:"Changing posture, stance and body language tells the audience what a character is like — a confident character stands tall."}
+ ]},
+ {id:"english", name:"English", emoji:"📖", c:"#E57373", q:[
+  {q:"What does 'culture' mean?", o:["Shared ideas and traditions","One single person's opinion","A particular type of poem","A strict rule of grammar"], w:"Culture is the pattern of behaviour, ideas and traditions shared by a society or group of people."},
+  {q:"'Prejudice' means…", o:["An unfair judgement about someone","Treating everybody exactly equally","Being extremely neat and tidy","A useful persuasive technique"], w:"Prejudice is an unfair judgement about a person, usually on grounds like race, religion, gender or age."},
+  {q:"The word beginning with 'D' that means the unfair treatment of others is…", o:["Discrimination","Direction","Description","Dialogue"], w:"Discrimination is the unfair treatment of others, usually on grounds such as race, religion, gender, age or disability."},
+  {q:"'Tolerance' means…", o:["Accepting beliefs unlike your own","Sharing another person's emotions","Repeating a word for effect","Deliberately telling a lie"], w:"Tolerance is understanding and accepting feelings, habits or beliefs different from yours. Feeling another's emotions is empathy."},
+  {q:"Being aware of and understanding another person's feelings is called…", o:["Empathy","Exaggeration","Editing","Emphasis"], w:"Empathy is understanding and sharing another person's feelings and experiences."},
+  {q:"What is DAFOREST used for?", o:["Remembering persuasive writing techniques","Spelling out long words","Naming types of poem","Solving maths equations"], w:"DAFOREST helps you remember persuasive techniques: Direct address, Alliteration, Facts, Opinion, Rhetorical question, Emotive language, Statistics, Triple."},
+  {q:"When a writer speaks straight to the reader using 'you' or 'we', the technique is called…", o:["Direct address","Bold alliteration","A clever simile","A useful statistic"], w:"Direct address is when the writer speaks to the reader directly using pronouns like 'you' or 'we'."},
+  {q:"'Slippery slimy snakes' is an example of…", o:["Alliteration","A metaphor","A simile","A statistic"], w:"Alliteration is using words in a row that begin with the same consonant sound."},
+  {q:"Why does a writer use a rhetorical question?", o:["To emphasise an idea","To ask for real information","To bring a story to an end","To describe a quiet setting"], w:"A rhetorical question doesn't need an answer — it makes the reader think and emphasises an idea or opinion."},
+  {q:"'She was a shining star' is an example of a…", o:["Metaphor","Simile","Fact","Statistic"], w:"A metaphor describes something as if it IS something else (not literally). A simile would use 'like' or 'as'."},
+  {q:"The PEAZL frame helps you…", o:["Write an analytical paragraph","Learn some French vocabulary","Draw an accurate graph","Warm up before PE"], w:"PEAZL — Point, Evidence, Analyse, Zoom, Link — is the frame for building a clear analytical paragraph."},
+  {q:"Who wrote the novel 'Windrush Child', studied in the Freedom & Injustice unit?", o:["Benjamin Zephaniah","Michelle Obama","Amanda Gorman","Charles Dickens"], w:"'Windrush Child' was written by Benjamin Zephaniah, telling the story of the Windrush generation coming to Britain."},
+  {q:"The word meaning to keep people apart from one another is…", o:["Segregation","Compassion","Tolerance","Tradition"], w:"Segregation is the action of separating people or things to keep them apart."},
+  {q:"Which of these is a typical feature of a Gothic story?", o:["A dark, sinister atmosphere","A cheerful seaside setting","An ordinary maths lesson","A simple shopping list"], w:"Gothic stories use dark, sinister, mysterious atmospheres — often gloomy, dilapidated (decayed) settings to create fear."},
+  {q:"'Pathetic fallacy' is when a writer…", o:["Weather reflects a character's mood","Telling an amusing little joke","Packing the page with facts","Writing the whole thing in French"], w:"Pathetic fallacy gives the weather human feelings to match the mood — e.g. storm clouds gathering before something bad happens."}
+ ]},
+ {id:"french", name:"French", emoji:"🇫🇷", c:"#64B5F6", q:[
+  {q:"What does 'Bonjour' mean?", o:["Hello","Goodbye","Thank you","Please"], w:"'Bonjour' means hello. 'Au revoir' means goodbye."},
+  {q:"'Comment t'appelles-tu?' is asking…", o:["What is your name?","How old are you?","How are you today?","Where do you live?"], w:"'Comment t'appelles-tu?' means 'What's your name?' You answer 'Je m'appelle…' (My name is…)."},
+  {q:"How do you say 'My name is George' in French?", o:["Je m'appelle Georges","J'ai douze ans","Ça va bien","Au revoir maintenant"], w:"'Je m'appelle…' means 'My name is…'."},
+  {q:"'Quel âge as-tu?' means…", o:["How old are you?","What is your name?","What is the time?","Do you have pets?"], w:"'Quel âge as-tu?' asks your age; you answer 'J'ai … ans' (I am … years old)."},
+  {q:"'J'ai douze ans' means…", o:["I am twelve years old","I have two pet dogs","I am feeling quite hungry","My birthday is in December"], w:"Literally 'I have twelve years' — in French you 'have' your age, so it means 'I am twelve'."},
+  {q:"The French letter 'h' is usually…", o:["Silent, not pronounced","Pronounced very strongly","Rolled on the tongue","Pronounced just like z"], w:"In French the letter h is silent — that's why you use l' before it, e.g. 'l'hôtel', not 'le hôtel'."},
+  {q:"In French, the letters 'ch' make which sound?", o:["Sounds like sh","Sounds like k","Sounds like ch","Sounds like z"], w:"In French 'ch' sounds like 'sh' in English — e.g. 'chou' (cabbage), 'chaussures' (shoes)."},
+  {q:"How do you say 'a black cat' in French?", o:["Un chat noir","Un chien blanc","Une souris grise","Un lapin blanc"], w:"'Un chat' = a cat, 'noir' = black. The colour usually comes after the noun in French."},
+  {q:"'C'est quand, ton anniversaire?' is asking…", o:["When is your birthday?","What is your name?","How are you feeling?","What is in your bag?"], w:"This asks when your birthday is; you answer 'Mon anniversaire, c'est le…' (My birthday is on the…)."},
+  {q:"What does 'ma sœur' mean?", o:["My sister","My brother","My mother","My grandmother"], w:"'Ma sœur' means my sister; 'mon frère' is my brother."},
+  {q:"'Dans la salle de classe, il y a…' means…", o:["In the classroom, there is","Inside my school bag there is","I would really like a","I do not have any"], w:"'Il y a' means 'there is / there are'. 'Dans la salle de classe' = in the classroom."},
+  {q:"Why do some French words use 'un' and others 'une'?", o:["Nouns are masculine or feminine","It depends on word length","It is completely random really","Based on the very first letter"], w:"French nouns have a gender — masculine words take 'un', feminine words take 'une'."},
+  {q:"'Comment ça va?' means…", o:["How are you?","How old are you?","What is your name?","Where do you live?"], w:"'Comment ça va?' (or 'Ça va?') asks how you are. You might reply 'Ça va bien' (I'm well)."},
+  {q:"A 'liaison' in French is when…", o:["A silent letter becomes sounded","You shout out a word","You skip over a word","You spell a word aloud"], w:"In a liaison a normally-silent final letter links onto the next word if it starts with a vowel or silent h — 'les enfants' sounds like 'lay-z-enfants'."}
+ ]},
+ {id:"geography", name:"Geography", emoji:"🗺️", c:"#4DB6AC", q:[
+  {q:"A map shows a place as seen from…", o:["A bird's-eye view from above","A side-on view from ground","A view looking straight up","A view from inside buildings"], w:"A map is a drawing of a place seen from above — a bird's-eye view."},
+  {q:"Which organisation produces very detailed maps of Great Britain?", o:["The Ordnance Survey","The National Broadcaster","The Met Office","The National Trust"], w:"The Ordnance Survey (OS) is the national mapping agency for Great Britain."},
+  {q:"Going clockwise from North, the four main compass points are…", o:["North, East, South, West","North, West, South, East","North, South, East, West","East, North, West, South"], w:"Clockwise from the top: North, East, South, West — remembered by 'Never Eat Shredded Wheat'."},
+  {q:"Why might you use an eight-point compass instead of a four-point one?", o:["To give more precise directions","To make the map smaller","Because it is much easier","To measure height on land"], w:"More points (8 or 16) let you give directions more precisely, adding in-between directions like north-east."},
+  {q:"What do contour lines on a map join together?", o:["Points of equal height","Rivers and their streams","Roads and main paths","Towns and their villages"], w:"Contour lines join places of equal height above sea level, shown in orange on OS maps."},
+  {q:"If contour lines are very CLOSE together, what does that tell you?", o:["The land is steep","The land is flat","It is under water","It is dense forest"], w:"Close contour lines mean the height changes quickly over a short distance, so the land is steep."},
+  {q:"Contour lines that are FAR apart show land that is…", o:["Flat","Steep","Cliffs","Rivers"], w:"Widely-spaced contours mean the height changes slowly, so the land is fairly flat."},
+  {q:"What does a 'spot height' show on a map?", o:["The exact height there","The name of a town","A public footpath route","A local village bus stop"], w:"A spot height gives the exact height (in metres above sea level) at a particular point."},
+  {q:"The VERTICAL grid lines, read first in a grid reference, are called…", o:["Eastings","Northings","Contours","Symbols"], w:"Eastings are the vertical lines, read first ('along the corridor'); northings are horizontal, read second ('up the stairs')."},
+  {q:"The HORIZONTAL grid lines used in grid references are called…", o:["Northings","Eastings","Latitudes","Scale bars"], w:"Northings are the horizontal lines. You always read eastings first, then northings."},
+  {q:"When giving a grid reference, which do you read FIRST?", o:["Eastings first, then northings","Northings first, then eastings","Whichever number is bigger","It really doesn't matter"], w:"Always read eastings before northings — 'along the corridor before you go up the stairs' — so everyone reads it the same way."},
+  {q:"Why would you use a six-figure grid reference instead of a four-figure one?", o:["To pinpoint a place accurately","To make it much shorter","To show the height too","To measure a rough distance"], w:"A six-figure reference splits each square into tenths, locating a place far more precisely than four figures."},
+  {q:"On a 1:25 000 map, 1 cm on the map equals how much in real life?", o:["250 m in real life","25 cm in real life","25 m in real life","25 km in real life"], w:"A scale of 1:25 000 means 1 cm on the map represents 25 000 cm — that's 250 m on the ground."},
+  {q:"Why does every map need a scale?", o:["To work out real distances","To make it more colourful","So it fits on paper","To show where north is"], w:"You can't draw a map life-size, so the scale tells you how much smaller it is — letting you convert map distances into real ones."},
+  {q:"What's the best way to measure a road that is NOT straight?", o:["Follow it with a string","Use a straight steel ruler","Simply guess the distance","Count all the contour lines"], w:"A ruler only works for straight lines, so for a winding road follow it with string or paper's edge, then compare to the scale bar."}
+ ]},
+ {id:"history", name:"History", emoji:"🏛️", c:"#C0A184", q:[
+  {q:"In the Palaeolithic period, how did humans get their food?", o:["Hunting animals and gathering plants","Farming crops in large fields","Buying it from busy markets","Keeping big herds of cattle"], w:"Palaeolithic humans were hunter-gatherers (nomads) who followed animal herds and gathered wild plants, rather than farming."},
+  {q:"What was the Neolithic Revolution?", o:["Switching from hunting to farming","A long war between tribes","The building of ancient Rome","The invention of first writing"], w:"It was humans switching from a nomadic hunter-gatherer life to farming and living in settled villages, from around 10,000 BC."},
+  {q:"Why did the population grow after people started farming?", o:["Surplus food and more children","People simply stopped getting ill","All of the tribal wars ended","Everybody suddenly lived forever"], w:"Staying put produced surplus food, and settled women could have children more often (nomads needed years between babies), so numbers grew."},
+  {q:"Why did new skills like pottery and weaving develop after farming began?", o:["Not everyone needed to farm","Families started having more children","The weather changed a lot","Kings ordered people to work"], w:"With surplus food, not everyone needed to grow food, so people had time to develop skills like tool-making, pottery and weaving."},
+  {q:"Why did inequality appear after the Neolithic Revolution?", o:["Traders grew richer than farmers","Everyone always earned the same","Kings paid all the farmers","Nobody used any money yet"], w:"New specialists traded goods rather than growing food, and some became much richer than others — creating inequality for the first time."},
+  {q:"Why did settling down and farming lead to MORE disease?", o:["People and animals lived close","The available food was poisonous","The weather turned much colder","People simply stopped washing"], w:"Living closely with people and farm animals let organisms jump species, spreading diseases like smallpox, measles and influenza."},
+  {q:"Skara Brae in Scotland is famous as…", o:["Europe's most complete Neolithic village","A large Roman army fort","A strong Norman stone castle","An ancient standing stone circle"], w:"Skara Brae in the Orkneys is Europe's most complete Neolithic village, occupied from around 3180 BC."},
+  {q:"Rome was founded in 753 BC. When did the Roman Empire fall?", o:["476 AD","43 AD","1066 AD","60 AD"], w:"Rome was founded in 753 BC and fell in 476 AD."},
+  {q:"One reason the Roman army was so successful was 'recruitment'. What does that mean?", o:["Only fit, healthy men chosen","Absolutely anyone could just join","Soldiers earned enormous daily wages","They mostly used young child soldiers"], w:"The Romans carefully picked only tall, fit and healthy men — anyone too short, slow or weak was turned away."},
+  {q:"A Roman legion was made up of about how many men?", o:["About 5,000","About 80","About 500","About 50,000"], w:"A legion was around 5,000 men, led by a Legate, and was divided into ten cohorts."},
+  {q:"How did harsh discipline help make the Roman army so successful?", o:["Fear made them obey instantly","It made the men tired","It was popular with soldiers","It saved the army money"], w:"Brutal discipline (flogging, even execution for cowardice) meant soldiers obeyed orders and worked as a team, making them almost unbeatable."},
+  {q:"The Roman 'Tortoise' (testudo) tactic was used to…", o:["Shields protected them from arrows","To break down castle walls","To cross deep, fast rivers","To signal loudly for help"], w:"In the Tortoise, soldiers locked shields around and above them to protect the group from spears and arrows while advancing."},
+  {q:"Why was there a contest for the English throne in 1066?", o:["Edward died without an heir","England had no king before","War destroyed the royal family","The Pope had banned kings"], w:"Edward the Confessor died in January 1066 with no heir, so several men claimed the throne, leading to the battles of 1066."},
+  {q:"Why did William of Normandy believe he should be King of England?", o:["Edward promised him the throne","He was Edward's own son","He won a public election","The Witan had chosen him"], w:"William said Edward promised him the throne in 1051 and that Harold swore a holy oath to back him — so the Pope supported William when Harold was crowned."},
+  {q:"What was the job of the Witan in Anglo-Saxon England?", o:["Choose the next king","Collect taxes from people","Lead the whole army","Build castles across England"], w:"The Witan was the council of the most powerful men, whose role was to choose the next king when there was no accepted heir. They backed Harold Godwinson."}
+ ]},
+ {id:"maths", name:"Maths", emoji:"➗", c:"#7986CB", q:[
+  {q:"Simplify: g + g + g + g", o:["4g","g4","4 + g","g to power 4"], w:"Adding four lots of g is 4 × g, written as 4g."},
+  {q:"Simplify: h × h × h", o:["h³","3h","h + 3","6h"], w:"Multiplying h by itself three times is h³. Note 3h would mean h + h + h."},
+  {q:"If a = 7, what is 11a?", o:["77","18","117","71"], w:"11a means 11 × a, so 11 × 7 = 77."},
+  {q:"Simplify: 12a + 3 − 5a + 4a", o:["11a + 3","14a alone","24a alone","11a + 7"], w:"Collect like terms: 12a − 5a + 4a = 11a, and the 3 stays separate, giving 11a + 3."},
+  {q:"To solve g + 17 = 30, what do you do to both sides?", o:["Subtract 17 from both sides","Add 17 to both sides","Multiply both sides by 17","Divide both sides by 30"], w:"Use the inverse operation: the opposite of adding 17 is subtracting 17, giving g = 13."},
+  {q:"Is the sequence 1, 3, 9, 27, 81… linear or non-linear?", o:["Non-linear — the gaps change","Linear — it goes up two","Linear — it's a straight line","Non-linear — it keeps decreasing"], w:"A linear sequence goes up by the same amount each time. Here you multiply by 3, so the gaps grow — it's non-linear."},
+  {q:"In the sequence 3, 5, 7, 9…, what is the term-to-term rule?", o:["Add 2","Multiply by 2","Add 3","Subtract 2"], w:"Each term is 2 more than the one before, so the rule is 'add 2' — a linear sequence."},
+  {q:"Round 3180 to 1 significant figure.", o:["3000","3200","3100","4000"], w:"The first significant figure is the 3 (thousands). The next digit is 1, so round down: 3000."},
+  {q:"How do you find the MEDIAN of a set of numbers?", o:["Order them, find the middle","Add every number up","Biggest minus the smallest","Find the most common"], w:"The median is the middle value once the numbers are put in order."},
+  {q:"The RANGE of a set of data is…", o:["Biggest minus smallest","The middle value","The overall total","The most common"], w:"Range = highest − lowest, showing how spread out the data is."},
+  {q:"Find the mean of 6, 8, 2, 8.", o:["6","8","24","4"], w:"Add them (6 + 8 + 2 + 8 = 24) then divide by how many there are (4): 24 ÷ 4 = 6."},
+  {q:"Which of these is equal to 1/2?", o:["0.5 and 50%","0.2 and 20%","0.25 and 25%","0.75 and 75%"], w:"A half can be written as the fraction 1/2, the decimal 0.5 or the percentage 50% — all equivalent."},
+  {q:"What is 10% of 820?", o:["82","8.2","820","8200"], w:"10% means one tenth, so divide by 10: 820 ÷ 10 = 82."},
+  {q:"A pie chart's angles always add up to 360°. Why?", o:["A full circle is 360°","There are about 360 days","360 is a round number","Pie charts have six slices"], w:"A pie chart is a full circle, and a circle is 360°, so all the sector angles must total 360."}
+ ]},
+ {id:"music", name:"Music", emoji:"🎵", c:"#F06292", q:[
+  {q:"In music, 'dynamics' refers to…", o:["The volume","The speed","The pitch","The instruments"], w:"Dynamics means how loud or quiet the music is — e.g. forte (loud), piano (quiet)."},
+  {q:"'Forte' means the music should be…", o:["Loud","Quiet","Fast","Slow"], w:"Forte means loud; piano means quiet."},
+  {q:"A 'crescendo' means the music…", o:["Gradually louder","Suddenly stops","Gets quieter","Speeds up"], w:"A crescendo is a gradual increase in volume — getting louder."},
+  {q:"'Tempo' describes…", o:["The speed","The volume","The tune","The instruments"], w:"Tempo is the speed of the music — allegro is fast, largo is slow."},
+  {q:"'Largo' tells a musician to play…", o:["Slowly","Quickly","Loudly","Quietly"], w:"Largo means slow; allegro means fast."},
+  {q:"'Pitch' in music means…", o:["How high or low","How loud it is","How fast it is","How long it lasts"], w:"Pitch is how high or low the music sounds."},
+  {q:"The 'melody' is…", o:["The main tune","The overall volume","The playing speed","The group of players"], w:"The melody is the main tune you'd hum along to."},
+  {q:"What does a conductor do?", o:["Directs the players with a baton","Writes down all of the music","Plays the big loud bass drum","Tunes each one of the instruments"], w:"The conductor directs the orchestra and shows the beat with a baton. The person who writes the music is the composer."},
+  {q:"A 'composer' is the person who…", o:["Writes the music","Conducts the orchestra","Sells the tickets","Plays first violin"], w:"The composer is the person who writes and creates the music."},
+  {q:"Which of these is one of the four main instrument families?", o:["Percussion","Dynamics","Tempo","Crescendo"], w:"The four families are strings, woodwind, brass and percussion. Dynamics, tempo and crescendo are musical terms, not families."},
+  {q:"How do brass instruments make their sound?", o:["The player's lips vibrate","By hitting them hard","Air over a hole","Plucking tight strings"], w:"Brass instruments are metal, and the sound vibrations are made by the player's lips buzzing."},
+  {q:"When a string instrument is plucked instead of bowed, it is called…", o:["Pizzicato","Staccato","Crescendo","Legato"], w:"Strings are usually bowed but can be plucked — this is called pizzicato."},
+  {q:"Why are percussion instruments split into 'tuned' and 'untuned'?", o:["Tuned ones play different pitches","One group is much louder","One group is made of metal","One group is far older"], w:"Tuned percussion can play different pitches (notes); untuned percussion like a drum makes sound but not set pitches."},
+  {q:"On a ukulele, what does a 'capo' do?", o:["Clamps strings to raise pitch","Tightens the strings for tuning","Cleans the four dusty strings","Holds the ukulele up straight"], w:"A capo clamps onto the strings to raise their pitch, letting a musician change key easily."}
+ ]},
+ {id:"pe", name:"PE", emoji:"⚽", c:"#81C784", q:[
+  {q:"Why do we do a 'pulse raiser' at the start of a warm-up?", o:["Raises heart rate for oxygen","To cool the body down","To stretch out the muscles","To end the whole session"], w:"A pulse raiser increases your heart rate, pumping more oxygen-rich blood to the muscles ready for exercise."},
+  {q:"Why is a cool down important after exercise?", o:["Lowers heart rate and soreness","It warms the muscles up","It makes you run faster","It builds muscle straight away"], w:"A cool down returns the heart rate to normal gradually and helps clear lactic acid, reducing muscle soreness."},
+  {q:"What is a normal RESTING pulse rate?", o:["70–100 beats per minute","10–20 beats per minute","150–200 beats per minute","40–50 beats per minute"], w:"A normal resting pulse is about 70–100 beats per minute, taken at the wrist or neck."},
+  {q:"Why shouldn't you use your thumb to take someone's pulse?", o:["The thumb has a pulse","It is far too big","It is simply bad luck","It is much too weak"], w:"The thumb has its own pulse, so you'd risk counting that instead — use two fingers."},
+  {q:"Does aerobic exercise use oxygen?", o:["Yes","No","Sometimes","Rarely"], w:"'Aerobic' means 'with oxygen' — aerobic exercise uses oxygen to release energy."},
+  {q:"In badminton, a game is usually played to how many points?", o:["21, win by two","11, win by one","15, win by three","30, win by two"], w:"Badminton is played to 21 points, but you must win by 2 clear points."},
+  {q:"If your opponent is at the BACK of the court, which badminton shot is a smart choice?", o:["A drop shot near the net","An overhead clear to the back","A high and long serve","A hard smash into the net"], w:"A drop shot lands gently near the net, forcing an opponent at the back to sprint forward — hard to return."},
+  {q:"In basketball, a shot made from OUTSIDE the three-point arc scores…", o:["3 points","2 points","1 point","5 points"], w:"Outside the arc scores 3 points; inside scores 2; a free throw is worth 1."},
+  {q:"In basketball, 'travelling' means…", o:["Moving without dribbling the ball","Passing much too far","Fouling another player","Scoring three quick points"], w:"Travelling is taking steps while holding the ball without dribbling — it's not allowed."},
+  {q:"When dribbling a basketball, how high should the ball bounce?", o:["About waist height","Above your head","At ankle height","At chest height"], w:"Dribbling at about waist height keeps the ball controlled and harder to steal."},
+  {q:"How many players are in an Under-12 (Year 7) football team?", o:["9","11","7","5"], w:"The U12 game is played with 9 players — a goalkeeper, defenders, midfielders and attackers."},
+  {q:"Why should your standing foot be next to the ball when you pass?", o:["It helps you pass accurately","It makes the ball rise","It is simply a rule","It saves lots of energy"], w:"Placing your standing (non-kicking) foot beside the ball helps you control the direction and pass accurately."},
+  {q:"In netball, once you land with the ball you must…", o:["Don't move your landing foot","Run freely with the ball","Bounce the ball first","Hold it for ten seconds"], w:"The footwork rule: after a 1-2 landing you can't move your landing foot. You also have only 3 seconds to release the ball."},
+  {q:"In netball, which TWO positions are allowed to shoot for goal?", o:["Goal Shooter and Goal Attack","Centre and Wing Attack","Goal Keeper and Goal Defence","Any player on the court"], w:"Only the GS and GA can score, and only from inside the shooting circle."},
+  {q:"Why is only ONE person allowed on a trampoline at a time?", o:["Safety — to avoid collisions","To save more space","So it lasts longer","Just to take turns"], w:"One person bounces at a time to stay safe; more people risks collisions and losing control. You stop using the 'kill bed'."}
+ ]},
+ {id:"re", name:"RE", emoji:"✝️", c:"#FFD54F", q:[
+  {q:"In RE, 'revelation' means…", o:["How God reveals himself","A weekly church service","A short spoken prayer","A particular type of Bible"], w:"Revelation is how God shows humans what he is like."},
+  {q:"Seeing God through the beauty of nature and the universe is an example of…", o:["Natural revelation","Special revelation","Strict creationism","Serious heresy"], w:"Natural revelation is understanding God through our own experiences, like nature's beauty. Special revelation is through scripture and church teaching."},
+  {q:"The Catholic view of the Genesis creation stories is that they are…", o:["Symbolic truth, like a metaphor","Exact literal fact, six days","Something completely and utterly untrue","A reliable modern science textbook"], w:"Catholics see Genesis as symbolic truth. Creationism takes it literally; Scientism says it's completely untrue."},
+  {q:"'Creationism' is the belief that…", o:["God made it in six days","Science can answer every question","Genesis is only a metaphor story","God does not exist at all"], w:"Creationism is the belief that Genesis is literal, exact truth. Scientism is the opposite — that science answers everything."},
+  {q:"Who wrote the encyclical 'Laudato Si''?", o:["Pope Francis","Saint Paul","Saint Jerome","John Wycliffe"], w:"Laudato Si' is an encyclical (a letter of guidance) written by Pope Francis in 2015."},
+  {q:"What is the main message of Laudato Si'?", o:["Change our lives to protect Earth","We should build more churches","Science is completely and totally wrong","We should just pray more often"], w:"Laudato Si' warns about the damage humans do to the Earth and calls everyone to change how they live to protect our 'common home'."},
+  {q:"'Stewardship' in RE means…", o:["Caring for the world for God","Being in charge of a church","Reading the Bible every day","Praying quietly every single day"], w:"Stewardship is the duty to look after the world on behalf of God — the idea behind Laudato Si'."},
+  {q:"How many books make up the Bible?", o:["66 books in total","Just one long book","Exactly 100 books","Only 27 short books"], w:"The Bible is a collection of 66 books — 39 Old Testament, 27 New — written by many authors over thousands of years."},
+  {q:"A Catholic Bible has how many EXTRA books compared with others?", o:["7","12","3","None"], w:"Catholic Bibles have 7 extra books, the deuterocanonical books, placed between the Old and New Testaments."},
+  {q:"What language was the New Testament originally written in?", o:["Greek","Hebrew","Latin","English"], w:"The Old Testament was originally written in Hebrew and the New Testament in Greek. Jesus spoke Aramaic."},
+  {q:"In a Bible reference like 'Genesis 1:1', which number comes FIRST?", o:["The chapter, then the verse","The verse, then the chapter","The page, then the line","The year, then the day"], w:"A reference gives the book name, then chapter (first), then verse — so Genesis 1:1 is Genesis, chapter 1, verse 1."},
+  {q:"The 'Incarnation' means…", o:["God came to earth as Jesus","The moment when Jesus finally died","The time the Bible was written","A special type of daily prayer"], w:"'Incarnate' means 'made flesh', so the Incarnation is God coming to earth in human form as Jesus — celebrated at Christmas."},
+  {q:"'Hypostatic union' describes the belief that Jesus is…", o:["Fully human and fully God","Half a man, half God","Only human, nothing more","Only God, not human"], w:"The hypostatic union means Jesus is fully man AND fully God — not half and half."},
+  {q:"'Arianism' was a heresy that denied…", o:["That Jesus was truly God","That the Bible is true","That God made the world","That Jesus ever really existed"], w:"Arianism was a heresy (a belief against true Christian teaching) that denied Jesus was truly God. St Athanasius argued against Arius."},
+  {q:"The title 'Christ' comes from a Greek word meaning…", o:["Anointed one, the Messiah","A wise old teacher","The King of Rome","A humble local fisherman"], w:"'Christ' comes from the Greek 'Christos', meaning 'anointed one' (Messiah) — someone chosen by God."}
+ ]},
+ {id:"science", name:"Science", emoji:"🔬", c:"#4DD0E1", q:[
+  {q:"Which is a correct laboratory safety rule?", o:["Always wear eye protection","Eat while you work","Run between the benches","Leave long hair loose"], w:"Always wear eye protection, tie long hair back, and never eat or drink in the lab."},
+  {q:"Why are hazard symbols used on chemicals instead of just words?", o:["Recognised in every language","They simply look nicer","They are cheaper to print","Shops always require them"], w:"Hazard symbols work in any language, so anyone anywhere can instantly recognise the danger."},
+  {q:"The 'independent variable' in an experiment is…", o:["The one you change","The one you measure","The one kept the same","A surprising measuring mistake"], w:"The independent variable is what you deliberately change; the dependent variable is what you measure; control variables are kept the same."},
+  {q:"Which variable is the one you MEASURE?", o:["The one you measure","The one you change","The one kept constant","An odd result, an anomaly"], w:"The dependent variable is what you measure to see the effect of changing the independent variable."},
+  {q:"An 'anomaly' in your results is…", o:["A result that doesn't fit","The average of the results","Always the biggest number","One of the control variables"], w:"An anomaly is an odd result that doesn't fit the pattern — you circle it and ignore it when working out a mean."},
+  {q:"How are particles arranged in a SOLID?", o:["Fixed, regular, vibrating in place","Far apart and moving fast","Random, sliding past each other","Not touching one another"], w:"In a solid, particles are packed in a regular, fixed pattern and only vibrate in place, so a solid has a fixed shape and volume."},
+  {q:"Why can a gas be squashed (compressed) but a solid cannot?", o:["Gas particles have space between","Because gas is much lighter","Because solids are always colder","Because gases have no particles"], w:"In a gas the particles are spread out with lots of space, so they can be pushed closer; in a solid they're already tightly packed."},
+  {q:"Which change of state takes IN energy?", o:["Melting takes in energy","Freezing takes in energy","Condensation takes in energy","They all release energy"], w:"Melting and evaporation take in energy; freezing and condensation release energy."},
+  {q:"Filtration is used to separate…", o:["Separating an insoluble solid","Getting salt from water","Splitting colours in ink","Separating two different gases"], w:"Filtration separates an insoluble solid (one that won't dissolve, like sand) from a liquid."},
+  {q:"To get pure water from salty water, you would use…", o:["Distillation","Filtration","Chromatography","Magnetism"], w:"Distillation evaporates the water then condenses it back, leaving the salt behind — giving pure water."},
+  {q:"An acid has a pH that is…", o:["Less than 7","Exactly equal to 7","More than 7","Always exactly 14"], w:"Acids have a pH below 7; alkalis are above 7; a neutral substance is exactly 7."},
+  {q:"What happens when you add an alkali to an acid?", o:["They form salt and water","The whole mixture always explodes","Nothing at all happens","The whole mixture quickly freezes"], w:"Acid + alkali → salt + water. This neutralisation gives a neutral pH 7, turning universal indicator green."},
+  {q:"What is the function of the NUCLEUS in a cell?", o:["Control centre storing DNA","It makes the energy","It makes the food","It stores the water"], w:"The nucleus is the cell's control centre and stores the DNA. Mitochondria release energy; chloroplasts make food."},
+  {q:"Which part is found in PLANT cells but NOT animal cells?", o:["Chloroplasts","Nucleus","Cell membrane","Mitochondria"], w:"Chloroplasts (which make food by photosynthesis), a cell wall and a vacuole are found in plant cells but not animal cells."},
+  {q:"Why do muscles like the biceps and triceps work in 'antagonistic pairs'?", o:["Muscles pull but can't push","Both of them are weak","It helps to save energy","They both work at once"], w:"A muscle can only pull (contract), not push, so to bend your arm the bicep contracts while the tricep relaxes, and vice versa."}
+ ]},
+ {id:"spanish", name:"Spanish", emoji:"🇪🇸", c:"#FF8A65", q:[
+  {q:"'¿Cómo te llamas?' is asking…", o:["What is your name?","How are you today?","How old are you?","Where do you live?"], w:"'¿Cómo te llamas?' means 'What's your name?'"},
+  {q:"'¿Cómo estás?' (or '¿Qué tal?') means…", o:["How are you?","What is your name?","What do you study?","What is the time?"], w:"'¿Cómo estás?' or '¿Qué tal?' asks how you are."},
+  {q:"'¿Cuántos años tienes?' means…", o:["How old are you?","Your favourite school day?","Where do you live?","What is in school?"], w:"'¿Cuántos años tienes?' asks how old you are."},
+  {q:"What does 'el lunes' mean?", o:["Monday","Friday","Sunday","Tuesday"], w:"'El lunes' is Monday. (El martes = Tuesday, el viernes = Friday.)"},
+  {q:"'Estudio ciencias' means…", o:["I study science","We study science","I dislike science","She studies science"], w:"'Estudio' = I study; 'ciencias' = science. 'Estudiamos' would be 'we study'."},
+  {q:"Which school subject is 'matemáticas'?", o:["Maths","Music","English","History"], w:"'Matemáticas' is maths. (Música = music, historia = history, inglés = English.)"},
+  {q:"'Mi día favorito es el miércoles' means…", o:["My favourite day is Wednesday","My favourite subject is science","I don't like Wednesdays much","My birthday falls on Wednesday"], w:"'Mi día favorito es…' means 'My favourite day is…' and 'el miércoles' is Wednesday."},
+  {q:"'En mi instituto hay un gimnasio' means…", o:["There is a gym","There is no gym","My school is big","I like my school"], w:"'Hay' means 'there is/are'; 'un gimnasio' is a gym. 'No hay' would mean 'there isn't'."},
+  {q:"What is 'una biblioteca'?", o:["A library","A dining hall","A playground","A swimming pool"], w:"'Una biblioteca' is a library. (Comedor = dining hall, patio = playground, piscina = swimming pool.)"},
+  {q:"'Mi instituto es grande' means my school is…", o:["Big","Small","Old","Horrible"], w:"'Grande' means big; 'pequeño' means small."},
+  {q:"In Spanish, 'porque' means…", o:["Because","But","And","Also"], w:"'Porque' means 'because' — useful for giving a reason. ('Pero' = but, 'y' = and.)"},
+  {q:"Why does an adjective change from 'pequeño' to 'pequeña' or 'pequeños'?", o:["They agree with the noun","It is completely random","Just to sound much nicer","Only when asking questions"], w:"Spanish adjectives agree with the noun — masculine/feminine and singular/plural — so the ending changes."},
+  {q:"'¿Dónde vives?' means…", o:["Where do you live?","What do you study?","How old are you?","What is your name?"], w:"'¿Dónde vives?' asks where you live."},
+  {q:"'¿Qué estudias?' is asking…", o:["What do you study?","What is your name?","How are you today?","What day is it?"], w:"'¿Qué estudias?' means 'What do you study?' You'd answer 'Estudio…' (I study…)."}
+ ]}
+];
+
+/* ============================================================
+   ADVENTURES — each one is a Knowledge Organiser.
+   Only adventures with ready:true are playable. TO ADD A NEW ONE
+   LATER: add its subjects to the SUBJECTS array above (same shape),
+   then list their ids here inside regions, and set ready:true.
+   ============================================================ */
+function SUBJ(id){ return SUBJECTS.find(s=>s.id===id); }
+const ADVENTURES=[
+ {id:"y7p1", title:"Year 7 · Part 1", period:"Sept – Jan", ready:true, regions:[
+   {name:"Creative Coast", scenery:"🎨", c:"#FF7AB6", ids:["art","drama","music"]},
+   {name:"Tech Valley",    scenery:"⚙️", c:"#4FC3F7", ids:["computing","dt","maths"]},
+   {name:"Language Lands", scenery:"💬", c:"#B58BFF", ids:["english","french","spanish"]},
+   {name:"Explorer's Ridge",scenery:"🧭", c:"#4DB6AC", ids:["geography","history","re"]},
+   {name:"Science Summit", scenery:"🔬", c:"#FFB74D", ids:["science","pe"]}
+ ]},
+ {id:"y7p2", title:"Year 7 · Part 2", period:"Feb – July", ready:false, regions:[]},
+ {id:"y8p1", title:"Year 8 · Part 1", period:"Sept – Jan", ready:false, regions:[]},
+ {id:"y8p2", title:"Year 8 · Part 2", period:"Feb – July", ready:false, regions:[]},
+ {id:"y9p1", title:"Year 9 · Part 1", period:"Sept – Jan", ready:false, regions:[]},
+ {id:"y9p2", title:"Year 9 · Part 2", period:"Feb – July", ready:false, regions:[]}
+];
+function advById(id){ return ADVENTURES.find(a=>a.id===id); }
+function advSubjects(adv){
+  const out=[]; if(adv&&adv.regions) adv.regions.forEach(r=>r.ids.forEach(id=>{ const s=SUBJ(id); if(s)out.push(s); }));
+  return out;
+}
+function regionOfIndex(adv,i){ let n=0; for(let r=0;r<adv.regions.length;r++){ const len=adv.regions[r].ids.length; if(i<n+len) return r; n+=len; } return adv.regions.length-1; }
+
+/* ============================================================
+   STORAGE (safe — works offline; falls back to memory if the
+   browser blocks storage, e.g. in a preview)
+   ============================================================ */
+const mem = {};
+const store = {
+  get(k){ try{ const v=localStorage.getItem(k); return v===null?(k in mem?mem[k]:null):v; }catch(e){ return k in mem?mem[k]:null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } }
+};
+const KEY="y7quest_v1";
+function loadState(){
+  let s; try{ s=JSON.parse(store.get(KEY)); }catch(e){ s=null; }
+  if(!s||typeof s!=="object") s={};
+  s.name = s.name||"";
+  s.xp = s.xp||0;
+  s.bestStreak = s.bestStreak||0;
+  s.avatar = s.avatar||"🧙";
+  s.progress = s.progress||{};   // {advId:{subjId:{best,attempts,mastered}}}
+  if(s.subj){ s.progress.y7p1 = Object.assign({}, s.subj, s.progress.y7p1||{}); delete s.subj; }
+  if(!("currentAdv" in s)) s.currentAdv = null;
+  return s;
+}
+function saveState(){ store.set(KEY, JSON.stringify(state)); }
+let state = loadState();
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $=id=>document.getElementById(id);
+const screens=["welcome","adventures","home","quiz","results"];
+function show(name){ screens.forEach(s=>$(s).classList.toggle("hidden", s!==name)); window.scrollTo(0,0); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function starStr(n){ let s=""; for(let i=0;i<3;i++) s+= i<n?"★":"☆"; return s; }
+function starsFor(pct){ return pct>=90?3:pct>=70?2:pct>=50?1:0; }
+function levelFrom(xp){ const per=150; return {level:Math.floor(xp/per)+1, into:xp%per, per}; }
+
+/* ============================================================
+   HOME
+   ============================================================ */
+let reviseMode=false;
+let selected=new Set();
+let curAdv=null, curSubjects=[];
+
+const DONE_PCT=80; // score needed for an area to count as "conquered"
+function prog(advId){ state.progress[advId]=state.progress[advId]||{}; return state.progress[advId]; }
+function sp(advId,id){ const g=prog(advId); return g[id]||(g[id]={best:0,attempts:0,mastered:false}); }
+function conquered(advId,id){ const p=(state.progress[advId]||{})[id]||{}; return !!(p.mastered||(p.best||0)>=DONE_PCT); }
+function started(advId,id){ const p=(state.progress[advId]||{})[id]||{}; return (p.attempts||0)>0||(p.best||0)>0; }
+function advDone(adv){ const subs=advSubjects(adv); let d=0; subs.forEach(s=>{ if(conquered(adv.id,s.id)) d++; }); return {done:d,total:subs.length}; }
+function hexA(hex,a){ hex=(hex||"#888").replace("#",""); if(hex.length===3)hex=hex.split("").map(c=>c+c).join(""); const n=parseInt(hex,16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; }
+
+/* ---------- Adventure select ---------- */
+function renderAdventures(){
+  $("advGreet").textContent="Hi, "+(state.name||"friend");
+  const lv=levelFrom(state.xp);
+  $("advLevel").textContent=lv.level;
+  $("advXp").style.width=Math.round(lv.into/lv.per*100)+"%";
+  const box=$("advList"); box.innerHTML="";
+  ADVENTURES.forEach(a=>{
+    if(a.ready){
+      const {done,total}=advDone(a);
+      const pct = total?Math.round(done/total*100):0;
+      const b=document.createElement("button");
+      b.className="advcard"; b.type="button";
+      b.innerHTML=`<span class="ic">${done>=total&&total>0?"🏆":"🗺️"}</span>
+        <span class="info"><span class="t">${a.title}</span><span class="p">${a.period} · ${total} areas</span>
+          <span class="mini"><i style="width:${pct}%"></i></span>
+          <span class="done-pill">${done}/${total} areas conquered</span></span>
+        <span class="go">›</span>`;
+      b.addEventListener("click",()=>openAdventure(a.id));
+      box.appendChild(b);
+    } else {
+      const d=document.createElement("div");
+      d.className="advcard soon";
+      d.innerHTML=`<span class="advbadge">Coming soon</span><span class="ic">🔒</span>
+        <span class="info"><span class="t">${a.title}</span><span class="p">${a.period}</span>
+          <span class="done-pill" style="color:var(--muted)">Add its Knowledge Organiser to unlock</span></span>`;
+      box.appendChild(d);
+    }
+  });
+}
+function openAdventure(id){ state.currentAdv=id; saveState(); reviseMode=false; renderHome(); show("home"); }
+
+/* ---------- Home (map) ---------- */
+function renderHome(){
+  curAdv = advById(state.currentAdv) || ADVENTURES[0];
+  curSubjects = advSubjects(curAdv);
+  $("homeKicker").textContent = curAdv.title;
+  $("greet").textContent = "Hi, "+(state.name||"friend");
+  const lv=levelFrom(state.xp);
+  $("levelNum").textContent=lv.level;
+  $("xpFill").style.width=Math.round(lv.into/lv.per*100)+"%";
+  const {done,total}=advDone(curAdv);
+  $("statMastered").textContent=done+"/"+total;
+  $("statXp").textContent=state.xp;
+  $("statStreak").textContent=state.bestStreak;
+
+  buildTrail(done, total);
+  buildGrid();
+
+  $("mapHeading").textContent = reviseMode?"Tap subjects to revise":"Your subjects";
+  $("mapHint").textContent = reviseMode?"Mixed round from your picks"
+                 : (done>=total?"All areas conquered! 🎉":"Tap a subject to play");
+  $("startbar").classList.toggle("hidden",!reviseMode);
+  $("reviseBtn").classList.toggle("hidden",reviseMode);
+  $("settingsBtn").classList.toggle("hidden",reviseMode);
+  $("homeToAdv").classList.toggle("hidden",reviseMode);
+  updateStartBtn();
+}
+
+function buildTrail(done, total){
+  const frac = total? done/total : 0;
+  const pct = Math.round(frac*100);
+  const at = f => `calc(8px + (100% - 16px) * ${f.toFixed(4)})`;
+  let cum=0, miles="";
+  curAdv.regions.forEach(r=>{
+    cum+=r.ids.length;
+    const rDone=r.ids.every(id=>conquered(curAdv.id,id));
+    miles+=`<div class="mile ${rDone?"lit":""}" style="left:${at(total?cum/total:0)}" title="${r.name}"><span>${r.scenery}</span></div>`;
+  });
+  const finish = done>=total && total>0;
+  $("trail").innerHTML =
+     `<div class="ttrack"></div>`
+   + `<div class="tfill" style="width:calc((100% - 16px) * ${frac.toFixed(4)})"></div>`
+   + miles
+   + `<div class="tstart">🚩</div>`
+   + `<div class="tend ${finish?"lit":""}">🏁</div>`
+   + `<div class="thero" style="left:${at(frac)}">${state.avatar||"🧙"}</div>`
+   + `<div class="tlabel">${done} of ${total} areas conquered · ${pct}%</div>`;
+}
+
+function buildGrid(){
+  const adv=curAdv, wrap=$("grid");
+  let html="";
+  adv.regions.forEach(r=>{
+    const subs=r.ids.map(id=>SUBJ(id)).filter(Boolean);
+    const rDone=r.ids.filter(id=>conquered(adv.id,id)).length;
+    html+=`<div class="rhead" style="border-color:${hexA(r.c,.5)}"><span class="rsc">${r.scenery}</span>`
+        + `<span class="rname">${r.name}</span><span class="rp">${rDone}/${r.ids.length}</span></div>`;
+    html+=`<div class="grid">`;
+    subs.forEach(s=>{
+      const p=(state.progress[adv.id]||{})[s.id]||{}, best=p.best||0;
+      const isDone=conquered(adv.id,s.id), sel=selected.has(s.id);
+      const corner = reviseMode
+        ? `<div class="selbox">✓</div>`
+        : `<div class="check ${p.mastered?"on":""}" data-master="${s.id}" role="button" aria-label="Mark ${s.name} mastered">✓</div>`;
+      const meta = best>0
+        ? `<span class="stars"><span class="on">${"★".repeat(starsFor(best))}</span><span class="off">${"☆".repeat(3-starsFor(best))}</span></span> <span class="best">${best}%</span>`
+        : `<span>Not started</span>`;
+      const cls = "tile"+(reviseMode?" selectable":"")+(isDone?" mastered":"")+(sel?" selected":"");
+      html+=`<div class="${cls}" data-id="${s.id}" role="button" tabindex="0" style="--c:${s.c}">${corner}`
+          + `<div class="emoji">${s.emoji}</div><div><div class="nm">${s.name}</div>`
+          + `<div class="meta">${meta}</div></div></div>`;
+    });
+    html+=`</div>`;
+  });
+  wrap.innerHTML=html;
+  // wire tiles
+  wrap.querySelectorAll(".tile").forEach(t=>{
+    t.addEventListener("click",e=>{
+      if(e.target.closest("[data-master]")) return;
+      const id=t.dataset.id;
+      if(reviseMode) toggleSelect(id);
+      else { const idx=curSubjects.findIndex(x=>x.id===id); startQuiz(idx); }
+    });
+  });
+  if(!reviseMode){
+    wrap.querySelectorAll("[data-master]").forEach(btn=>{
+      btn.addEventListener("click",e=>{ e.stopPropagation(); toggleMaster(btn.dataset.master); });
+    });
+  }
+}
+
+const AVATARS=["🧙","🦸","🚀","🐯","🦊","🐉","🤖","🦉","🐺","🐼","🦕","🥷"];
+let pendingAvatar=state.avatar||AVATARS[0];
+function paintAvatars(id, current, onPick){
+  const box=$(id); if(!box) return; box.innerHTML="";
+  AVATARS.forEach(a=>{
+    const b=document.createElement("button");
+    b.className="av"+(a===current?" sel":""); b.type="button"; b.textContent=a;
+    b.addEventListener("click",()=>{ onPick(a); box.querySelectorAll(".av").forEach(x=>x.classList.toggle("sel",x.textContent===a)); });
+    box.appendChild(b);
+  });
+}
+function toggleMaster(id){
+  const p=sp(curAdv.id,id);
+  p.mastered=!p.mastered; saveState(); renderHome();
+}
+function toggleSelect(id){ if(selected.has(id))selected.delete(id); else selected.add(id); renderHome(); }
+function updateStartBtn(){
+  const n=selected.size;
+  const b=$("startRevise");
+  b.disabled = n===0;
+  b.textContent = n===0?"Start revision":`Start revision (${n} area${n>1?"s":""})`;
+}
+$("reviseBtn").addEventListener("click",()=>{
+  reviseMode=true; selected=new Set();
+  curSubjects.forEach(s=>{ if(!conquered(curAdv.id,s.id)) selected.add(s.id); });
+  renderHome();
+});
+$("cancelRevise").addEventListener("click",()=>{ reviseMode=false; renderHome(); });
+$("startRevise").addEventListener("click",()=>{ if(selected.size) startMixed([...selected]); });
+$("homeToAdv").addEventListener("click",()=>{ reviseMode=false; renderAdventures(); show("adventures"); });
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+let quiz=null; // {subject, name, color, mode, questions:[{q,opts:[{t,correct}],w}], i, correct, streak}
+const MIX_MAX=20;
+
+function buildQuestions(pairs){
+  // pairs: [{item, subj}] — keep each question's subject so we can label it
+  return shuffle(pairs).map(({item,subj})=>{
+    const opts = shuffle(item.o.map((t,idx)=>({t, correct: idx===0})));
+    return {q:item.q, opts, w:item.w, subj:subj.name, emoji:subj.emoji, color:subj.c};
+  });
+}
+function startQuiz(index){
+  const s=curSubjects[index];
+  quiz={ mode:"single", advId:curAdv.id, id:s.id, name:s.name, color:s.c,
+    questions:buildQuestions(s.q.map(item=>({item,subj:s}))), i:0, correct:0, streak:0 };
+  reviseMode=false; enterQuiz();
+}
+function startMixed(ids){
+  let pool=[];
+  ids.forEach(id=>{ const s=curSubjects.find(x=>x.id===id); if(s) s.q.forEach(item=>pool.push({item,subj:s})); });
+  pool=shuffle(pool).slice(0,MIX_MAX);
+  quiz={ mode:"mixed", advId:curAdv.id, id:null, name:"Mixed revision", color:"#FFC24B",
+    questions:buildQuestions(pool), i:0, correct:0, streak:0 };
+  reviseMode=false; enterQuiz();
+}
+function enterQuiz(){
+  document.documentElement.style.setProperty("--c",quiz.color);
+  $("quizFill").style.background=`linear-gradient(90deg, ${quiz.color}, ${quiz.color})`;
+  show("quiz"); renderQuestion();
+}
+function renderQuestion(){
+  const q=quiz.questions[quiz.i];
+  document.documentElement.style.setProperty("--c", q.color||quiz.color);
+  $("quizSubject").textContent=quiz.name;
+  $("quizProg").textContent=`Question ${quiz.i+1} of ${quiz.questions.length}`;
+  $("qNum").textContent=`${q.emoji} ${q.subj} · Question ${quiz.i+1}`;
+  $("qText").textContent=q.q;
+  $("quizFill").style.width=Math.round(quiz.i/quiz.questions.length*100)+"%";
+  $("streakVal").textContent=quiz.streak;
+  $("streakChip").classList.toggle("hot",quiz.streak>=3);
+
+  const wrap=$("opts"); wrap.innerHTML="";
+  const letters=["A","B","C","D"];
+  q.opts.forEach((o,idx)=>{
+    const b=document.createElement("button");
+    b.className="opt"; b.innerHTML=`<span class="key">${letters[idx]}</span><span>${o.t}</span>`;
+    b.addEventListener("click",()=>answer(idx,b));
+    wrap.appendChild(b);
+  });
+  const ex=$("explain"); ex.className="explain"; $("explainText").textContent="";
+  $("nextWrap").classList.add("hidden");
+}
+function answer(idx,btn){
+  const q=quiz.questions[quiz.i];
+  const buttons=[...$("opts").children];
+  buttons.forEach((b,j)=>{
+    b.disabled=true;
+    if(q.opts[j].correct) b.classList.add("correct");
+    else b.classList.add("dim");
+  });
+  const right=q.opts[idx].correct;
+  if(right){ btn.classList.remove("dim"); quiz.correct++; quiz.streak++; if(quiz.streak>state.bestStreak){state.bestStreak=quiz.streak;} }
+  else { btn.classList.remove("dim"); btn.classList.add("wrong"); quiz.streak=0; }
+
+  const ex=$("explain");
+  ex.className="explain show "+(right?"good":"bad");
+  $("explainTag").textContent = right?"✓ Correct — here's why":"✗ Not quite — here's why";
+  $("explainText").textContent=q.w;
+  $("streakVal").textContent=quiz.streak;
+  $("streakChip").classList.toggle("hot",quiz.streak>=3);
+
+  const nb=$("nextBtn");
+  nb.textContent = quiz.i+1<quiz.questions.length ? "Next →" : "See my results →";
+  $("nextWrap").classList.remove("hidden");
+  saveState();
+}
+$("nextBtn").addEventListener("click",()=>{
+  if(quiz.i+1<quiz.questions.length){ quiz.i++; renderQuestion(); window.scrollTo(0,0); }
+  else finishQuiz();
+});
+$("quizBack").addEventListener("click",()=>{ reviseMode=false; renderHome(); show("home"); });
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function finishQuiz(){
+  const total=quiz.questions.length, correct=quiz.correct;
+  const pct=Math.round(correct/total*100);
+  const xpEarned=correct*10;
+  state.xp+=xpEarned;
+
+  let best=pct, celebrations=[];
+  if(quiz.mode==="single"){
+    const adv=advById(quiz.advId);
+    const was=conquered(quiz.advId, quiz.id);
+    const p=sp(quiz.advId, quiz.id);
+    p.attempts=(p.attempts||0)+1;
+    if(pct>(p.best||0)) p.best=pct;
+    best=p.best;
+    const now=conquered(quiz.advId, quiz.id);
+    if(!was && now){
+      const s=SUBJ(quiz.id)||{};
+      celebrations.push({emoji:s.emoji||"🚩", title:"Area conquered!", sub:`You planted your flag on ${quiz.name}!`});
+      const subs=advSubjects(adv), idx=subs.findIndex(x=>x.id===quiz.id), r=adv.regions[regionOfIndex(adv,idx)];
+      if(r && r.ids.every(id=>conquered(adv.id,id)))
+        celebrations.push({emoji:r.scenery, title:"Region complete!", sub:`The ${r.name} is all yours!`});
+      const dd=advDone(adv);
+      if(dd.done>=dd.total)
+        celebrations.push({emoji:"🏆", title:"Adventure complete!", sub:`Every area of ${adv.title} conquered. Legendary!`});
+    }
+  }
+  saveState();
+
+  const stars=starsFor(pct);
+  $("resScore").textContent=correct; $("resTotal").textContent=total;
+  $("resPct").textContent=pct+"%";
+  $("resXp").textContent="+"+xpEarned;
+  $("resBest").textContent = quiz.mode==="single" ? best+"%" : "—";
+  $("resStars").innerHTML = `<span class="on">${"★".repeat(stars)}</span><span class="off">${"☆".repeat(3-stars)}</span>`;
+
+  let em,title,sub;
+  if(pct===100){ em="🏆"; title="Perfect score!"; sub=`Every single one right, ${state.name}. Outstanding.`; }
+  else if(pct>=90){ em="🌟"; title="Brilliant!"; sub="Almost flawless — you really know this."; }
+  else if(pct>=70){ em="🎉"; title="Great work!"; sub="Strong result. A quick re-read of the misses and you'll ace it."; }
+  else if(pct>=50){ em="👍"; title="Good effort!"; sub="You're getting there — try again to push your score up."; }
+  else { em="💪"; title="Keep going!"; sub="Every round teaches you more. Read the explanations and have another go."; }
+  $("resEmoji").textContent=em; $("resTitle").textContent=title; $("resSub").textContent=sub;
+
+  const mb=$("masterBtn");
+  if(quiz.mode==="single"){
+    const p=sp(quiz.advId, quiz.id);
+    mb.classList.remove("hidden");
+    mb.textContent = p.mastered ? "Unmark as mastered" : "Mark area as mastered ✓";
+  } else { mb.classList.add("hidden"); }
+
+  if(celebrations.length) celebrateQueue(celebrations, ()=>show("results"));
+  else show("results");
+}
+
+/* ---------- Celebrations + confetti ---------- */
+let celeList=[], celeDone=null, confettiRAF=null;
+function celebrateQueue(list, done){ celeList=list.slice(); celeDone=done; nextCele(); }
+function nextCele(){
+  if(!celeList.length){ $("celebrate").classList.add("hidden"); stopConfetti(); const d=celeDone; celeDone=null; if(d)d(); return; }
+  const c=celeList.shift();
+  $("celeEmoji").textContent=c.emoji; $("celeTitle").textContent=c.title; $("celeSub").textContent=c.sub;
+  $("celeNext").textContent = celeList.length ? "Next →" : "Continue →";
+  $("celebrate").classList.remove("hidden"); startConfetti();
+}
+function startConfetti(){
+  const cv=$("confetti"); if(!cv||!cv.getContext) return;
+  let reduce=false; try{ reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
+  const ctx=cv.getContext("2d"); if(!ctx||reduce) return;
+  const W=cv.width=cv.offsetWidth||360, Hh=cv.height=cv.offsetHeight||600;
+  const cols=["#FFC24B","#46D6A0","#FF6B7A","#4FC3F7","#B58BFF","#81C784"];
+  const parts=[]; for(let i=0;i<130;i++) parts.push({x:Math.random()*W,y:-20-Math.random()*Hh,r:4+Math.random()*5,c:cols[i%cols.length],vy:2+Math.random()*3.5,vx:-1.5+Math.random()*3,rot:Math.random()*6.28,vr:-0.2+Math.random()*0.4});
+  const t0=(window.performance&&performance.now)?performance.now():Date.now();
+  cancelAnimationFrame(confettiRAF);
+  (function frame(){
+    const t=(window.performance&&performance.now)?performance.now():Date.now();
+    ctx.clearRect(0,0,W,Hh);
+    parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; if(p.y>Hh+20){p.y=-20;p.x=Math.random()*W;}
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); ctx.restore(); });
+    if(t-t0<4000) confettiRAF=requestAnimationFrame(frame);
+  })();
+}
+function stopConfetti(){ if(confettiRAF)cancelAnimationFrame(confettiRAF); const cv=$("confetti"); if(cv&&cv.getContext){ const c=cv.getContext("2d"); if(c)c.clearRect(0,0,cv.width,cv.height);} }
+$("celeNext").addEventListener("click", nextCele);
+$("againBtn").addEventListener("click",()=>{
+  if(quiz.mode==="single"){ const idx=curSubjects.findIndex(s=>s.id===quiz.id); startQuiz(idx>=0?idx:0); }
+  else { quiz.questions=shuffle(quiz.questions); quiz.i=0; quiz.correct=0; quiz.streak=0; enterQuiz(); }
+});
+$("masterBtn").addEventListener("click",()=>{
+  if(quiz.mode!=="single")return;
+  toggleMaster(quiz.id);
+  const p=sp(quiz.advId, quiz.id);
+  $("masterBtn").textContent = p.mastered ? "Unmark as mastered" : "Mark area as mastered ✓";
+});
+$("homeBtn").addEventListener("click",()=>{ reviseMode=false; renderHome(); show("home"); });
+
+/* ============================================================
+   WELCOME / SETTINGS / BOOT
+   ============================================================ */
+$("startJourney").addEventListener("click",()=>{
+  const v=$("nameInput").value.trim();
+  state.name = v || "friend";
+  state.avatar = pendingAvatar || AVATARS[0];
+  saveState(); renderAdventures(); show("adventures");
+});
+$("nameInput").addEventListener("keydown",e=>{ if(e.key==="Enter") $("startJourney").click(); });
+
+let resetArmed=false, resetTimer=null;
+function closeModal(){ resetArmed=false; if(resetTimer)clearTimeout(resetTimer); $("resetBtn").textContent="Reset all progress"; $("resetBtn").classList.remove("armed"); $("modal").classList.add("hidden"); }
+function openSettings(){
+  $("editName").value = (state.name && state.name!=="friend") ? state.name : "";
+  paintAvatars("avatarPick2", state.avatar, a=>{ state.avatar=a; saveState(); if(!$("home").classList.contains("hidden")) renderHome(); if(!$("adventures").classList.contains("hidden")) renderAdventures(); });
+  resetArmed=false; $("resetBtn").textContent="Reset all progress"; $("resetBtn").classList.remove("armed");
+  $("modal").classList.remove("hidden");
+}
+$("settingsBtn").addEventListener("click",openSettings);
+$("advSettings").addEventListener("click",openSettings);
+$("closeModal").addEventListener("click",closeModal);
+$("modal").addEventListener("click",e=>{ if(e.target.id==="modal") closeModal(); });
+$("saveName").addEventListener("click",()=>{
+  const v=$("editName").value.trim();
+  if(v){ state.name=v; saveState(); if(!$("home").classList.contains("hidden")) renderHome(); if(!$("adventures").classList.contains("hidden")) renderAdventures(); }
+  closeModal();
+});
+$("editName").addEventListener("keydown",e=>{ if(e.key==="Enter") $("saveName").click(); });
+$("resetBtn").addEventListener("click",()=>{
+  if(!resetArmed){
+    resetArmed=true;
+    $("resetBtn").textContent="Tap again to confirm reset";
+    $("resetBtn").classList.add("armed");
+    resetTimer=setTimeout(()=>{ resetArmed=false; $("resetBtn").textContent="Reset all progress"; $("resetBtn").classList.remove("armed"); },3000);
+    return;
+  }
+  clearTimeout(resetTimer); resetArmed=false;
+  state={name:"", xp:0, bestStreak:0, progress:{}, avatar:"🧙", currentAdv:null}; saveState(); selected=new Set(); reviseMode=false;
+  pendingAvatar=AVATARS[0]; paintAvatars("avatarPick", pendingAvatar, a=>{ pendingAvatar=a; });
+  $("modal").classList.add("hidden"); $("nameInput").value=""; show("welcome");
+});
+
+function boot(){
+  pendingAvatar=state.avatar||AVATARS[0];
+  paintAvatars("avatarPick", pendingAvatar, a=>{ pendingAvatar=a; });
+  if(!state.name){ show("welcome"); try{ setTimeout(()=>$("nameInput").focus(),300);}catch(e){} return; }
+  const adv=advById(state.currentAdv);
+  if(adv && adv.ready){ renderHome(); show("home"); }
+  else { renderAdventures(); show("adventures"); }
+}
+
+// If anything unexpected goes wrong, show it on-screen instead of a blank page.
+function showFatal(msg){
+  try{
+    var b=document.createElement("div");
+    b.style.cssText="position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#3a1a20;color:#ffd9de;padding:14px 16px;font:14px system-ui;border-top:2px solid #FF6B7A";
+    b.textContent="Something went wrong loading the quiz: "+msg;
+    document.body.appendChild(b);
+  }catch(e){}
+}
+window.addEventListener("error",function(e){ showFatal((e && e.message) ? e.message : "unknown error"); });
+
+try{ boot(); }
+catch(err){
+  // Make sure the intro is at least visible, then report.
+  try{ document.getElementById("welcome").classList.remove("hidden"); }catch(e){}
+  showFatal(err && err.message ? err.message : String(err));
+}
+</script>
+</body>
+</html>
